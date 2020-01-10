@@ -1,4 +1,6 @@
-﻿using LogCenter.Web.Boots;
+﻿using System.Collections.Generic;
+using System.IO;
+using LogCenter.Web.Boots;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -6,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 
 namespace LogCenter.Web
 {
@@ -19,7 +22,7 @@ namespace LogCenter.Web
             HostingEnvironment = hostingEnvironment;
             Configuration = configuration;
         }
-        
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc()
@@ -42,22 +45,32 @@ namespace LogCenter.Web
             {
                 app.UseDeveloperExceptionPage();
             }
-            
-            app.UseDefaultFiles();
-            var provider = new FileExtensionContentTypeProvider();
-            provider.Mappings[".vue"] = "text/html";
-            var staticFileOptions = new StaticFileOptions
+
+            app.UseDefaultFiles(new DefaultFilesOptions() { DefaultFileNames = new List<string>() { "index.html" } });
+
+            app.UseStaticFiles(new StaticFileOptions
             {
-                ContentTypeProvider = provider
-            };
-            app.UseStaticFiles(staticFileOptions);
+                ContentTypeProvider = new FileExtensionContentTypeProvider
+                {
+                    Mappings = { [".vue"] = "text/html" }
+                }
+            });
+
+            var fileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images"));
+            var imageRequestPath = "/MyImages";
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = fileProvider,
+                RequestPath = imageRequestPath
+            });
+            
+            app.UseDirectoryBrowser(new DirectoryBrowserOptions
+            {
+                FileProvider = fileProvider,
+                RequestPath = imageRequestPath
+            });
 
             app.UseMvc();
-
-            app.Run(async (context) =>
-            {
-                await context.Response.WriteAsync("Hello World!");
-            });
         }
     }
 }
