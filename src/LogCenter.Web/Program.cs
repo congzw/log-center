@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore;
+﻿using System;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 
 namespace LogCenter.Web
 {
@@ -12,14 +14,27 @@ namespace LogCenter.Web
         
         public static IWebHostBuilder CreateWebHostBuilder(string[] args)
         {
-            //var configuration = new ConfigurationBuilder().SetBasePath("todo")
-            //    .AddJsonFile("LogCenterConfig.json", true)
-            //    .Build();
+            var baseDirectory = GetBaseDirectory();
+            var configuration = new ConfigurationBuilder().SetBasePath(baseDirectory)
+                .AddJsonFile("LogCenterConfig.json", true)
+                .Build();
 
             var webHostBuilder = WebHost.CreateDefaultBuilder(args)
+                .UseConfiguration(configuration)
                 .UseStartup<Startup>();
 
             return webHostBuilder;
+        }
+
+
+        private static string GetBaseDirectory()
+        {
+            var basePath = Environment.CurrentDirectory;
+            if (string.IsNullOrEmpty(basePath))
+            {
+                basePath = AppDomain.CurrentDomain.BaseDirectory;
+            }
+            return basePath;
         }
     }
 }

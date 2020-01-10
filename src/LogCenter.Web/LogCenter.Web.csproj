@@ -11,9 +11,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Boots\" />
     <Folder Include="Hubs\" />
     <Folder Include="Domains\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="LogCenterConfig.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

@@ -1,14 +1,25 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using LogCenter.Web.Boots;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LogCenter.Web
 {
     public class Startup
     {
+        public IHostingEnvironment HostingEnvironment { get; set; }
+        public IConfiguration Configuration { get; set; }
+
+        public Startup(IHostingEnvironment hostingEnvironment, IConfiguration configuration)
+        {
+            HostingEnvironment = hostingEnvironment;
+            Configuration = configuration;
+        }
+        
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc()
@@ -21,7 +32,8 @@ namespace LogCenter.Web
                     //options.SuppressMapClientErrors = true;
                     //options.ClientErrorMapping[404].Link = "https://httpstatuses.com/404";
                 });
-            //mvcBuilder.AddApplicationPart(typeof(LogCenter.Web.AppServices.TestApiController).Assembly).AddControllersAsServices();
+
+            services.AddLogCenter(HostingEnvironment, Configuration);
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

@@ -1,0 +1,26 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Debug",
+      "System": "Information",
+      "Microsoft": "Information"
+    },
+    "Console": {
+      "IncludeScopes": true,
+      "LogLevel": {
+        "LogCenter": "Trace",
+        "System": "Information",
+        "Microsoft": "Information"
+      }
+    },
+    "Debug": {
+      "IncludeScopes": true,
+      "LogLevel": {
+        "LogCenter": "Trace",
+        "System": "Information",
+        "Microsoft": "None"
+      }
+    }
+  },
+  "AllowedHosts": "*"
+}
