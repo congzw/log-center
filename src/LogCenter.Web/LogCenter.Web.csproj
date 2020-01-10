@@ -8,6 +8,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,6 +20,10 @@
 
   <ItemGroup>
     <None Include="wwwroot\index.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LogCenter.Common\LogCenter.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>

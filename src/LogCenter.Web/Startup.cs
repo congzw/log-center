@@ -20,6 +20,17 @@ namespace LogCenter.Web
 
         public void ConfigureServices(IServiceCollection services)
         {
+            //json setting
+            services.AddMvcCore().AddJsonOptions(options =>
+            {
+                //options.SerializerSettings.Converters.Add(new StringEnumConverter
+                //{
+                //    AllowIntegerValues = false,
+                //    NamingStrategy = new CamelCaseNamingStrategy(true, true)
+                //});
+                //options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            });
+
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .ConfigureApiBehaviorOptions(options =>
