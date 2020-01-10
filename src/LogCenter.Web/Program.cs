@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore;
+﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 
 namespace LogCenter.Web
 {
@@ -16,9 +9,17 @@ namespace LogCenter.Web
         {
             CreateWebHostBuilder(args).Build().Run();
         }
+        
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args)
+        {
+            //var configuration = new ConfigurationBuilder().SetBasePath("todo")
+            //    .AddJsonFile("LogCenterConfig.json", true)
+            //    .Build();
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
+            var webHostBuilder = WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>();
+
+            return webHostBuilder;
+        }
     }
 }
