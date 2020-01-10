@@ -51,6 +51,7 @@ namespace LogCenter.Common
 
     public static class SimpleLogExtensions
     {
+
         public static bool ShouldLog(this SimpleLogLevel currentLevel, SimpleLogLevel enabledLevel)
         {
             return currentLevel >= enabledLevel && currentLevel != SimpleLogLevel.None;
@@ -61,12 +62,17 @@ namespace LogCenter.Common
             return currentLevel.ShouldLog(simpleLog.EnabledLevel);
         }
 
-        public static void LogInfo(this ISimpleLog simpleLog, string message)
+        public static void Debug(this ISimpleLog simpleLog, object message)
+        {
+            simpleLog.Log(message, SimpleLogLevel.Debug);
+        }
+
+        public static void Info(this ISimpleLog simpleLog, string message)
         {
             simpleLog.Log(message, SimpleLogLevel.Information);
         }
 
-        public static void LogEx(this ISimpleLog simpleLog, Exception ex, string message = null)
+        public static void Ex(this ISimpleLog simpleLog, Exception ex, string message = null)
         {
             var logMessage = string.Format("{0} => {1}", message ?? ex.Message, ex.StackTrace);
             simpleLog.Log(logMessage, SimpleLogLevel.Error);
@@ -98,7 +104,7 @@ namespace LogCenter.Common
         public SimpleLogSettings Settings { get; set; }
         public LogMessageActions LogActions { get; set; }
 
-        public ISimpleLog Create(string category)
+        public virtual ISimpleLog Create(string category)
         {
             var tryFixCategory = Settings.TryFixCategory(category);
             var simpleLogLevel = Settings.GetEnabledLevel(tryFixCategory);
@@ -402,20 +408,25 @@ namespace LogCenter.Common
     {
         public ISimpleLog GetLogger(string category = null)
         {
-            var logger = _simpleLogFactory.GetOrCreate(category);
+            var logger = SimpleLogFactory.Resolve().GetOrCreate(category);
             return logger;
         }
 
-        private readonly ISimpleLogFactory _simpleLogFactory;
-        public LogHelper()
-        {
-            _simpleLogFactory = SimpleLogFactory.Resolve();
-        }
         public static LogHelper Instance = new LogHelper();
-        public static Task Log(object message)
+
+        public static void Debug(object message)
         {
-            var simpleLog = Instance.GetLogger(null);
-            return simpleLog.Log(message, SimpleLogLevel.Trace);
+            Instance.GetLogger().Debug(message);
+        }
+
+        public static void Info(object message)
+        {
+            Instance.GetLogger().Log(message, SimpleLogLevel.Information);
+        }
+        
+        public static void Error(Exception ex, string message = null)
+        {
+            Instance.GetLogger().Ex(ex, message);
         }
     }
 

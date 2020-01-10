@@ -11,6 +11,7 @@ namespace LogCenter.Web
     {
         public IHostingEnvironment HostingEnvironment { get; set; }
         public IConfiguration Configuration { get; set; }
+        public IApplicationLifetime ApplicationLifetime { get; set; }
 
         public Startup(IHostingEnvironment hostingEnvironment, IConfiguration configuration)
         {
@@ -45,14 +46,16 @@ namespace LogCenter.Web
             services.AddLogCenter(HostingEnvironment, Configuration);
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime applicationLifetime)
         {
+            ApplicationLifetime = applicationLifetime;
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseLogCenter();
+            app.UseLogCenter(applicationLifetime);
 
             app.UseMvc();
         }

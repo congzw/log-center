@@ -54,7 +54,7 @@ namespace LogCenter.Web.Apis
             if (!ReportLogArgs.Validate(args, out var vMessage))
             {
                 //not block it
-                LogHelper.Log("Bad Request For LogReportApi: " + vMessage);
+                LogHelper.Debug("Bad Request For LogReportApi: " + vMessage);
 
                 messageResult.Message = vMessage;
                 return Task.FromResult(messageResult);

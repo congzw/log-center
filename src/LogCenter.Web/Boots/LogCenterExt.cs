@@ -11,6 +11,7 @@ namespace LogCenter.Web.Boots
     {
         private static IHostingEnvironment _hostingEnv = null;
         private static IConfiguration _configuration = null;
+        private static IApplicationLifetime _applicationLifetime = null;
 
         public static IServiceCollection AddLogCenter(this IServiceCollection services, IHostingEnvironment hostingEnv, IConfiguration configuration)
         {
@@ -21,8 +22,9 @@ namespace LogCenter.Web.Boots
             return services;
         }
 
-        public static void UseLogCenter(this IApplicationBuilder app)
+        public static void UseLogCenter(this IApplicationBuilder app, IApplicationLifetime applicationLifetime)
         {
+            _applicationLifetime = applicationLifetime;
             UseLogCenterStaticFiles(app);
             UseCenterLogLogging(app);
         }
@@ -34,6 +36,10 @@ namespace LogCenter.Web.Boots
         internal static IHostingEnvironment GetHostingEnvironment(this IServiceCollection services)
         {
             return _hostingEnv;
+        }
+        internal static IApplicationLifetime GetApplicationLifetime(this IServiceCollection services)
+        {
+            return _applicationLifetime;
         }
     }
 }

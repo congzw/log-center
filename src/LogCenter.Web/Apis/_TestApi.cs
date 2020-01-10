@@ -1,4 +1,5 @@
 ﻿using System;
+using LogCenter.Common;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -17,13 +18,28 @@ namespace LogCenter.Web.Apis
         [HttpGet("GetLog")]
         public string GetLog()
         {
-            var msg ="Log FROM " + this.GetType().Name + " " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            //Level Typical Use
+
+            //Fatal   Something bad happened; application is going down
+            //Error Something failed; application may or may not continue
+            //Warn Something unexpected; application will continue
+            //Info Normal behavior like mail sent, user updated profile etc.
+            //Debug For debugging; executed query, user authenticated, session expired
+            //Trace For trace debugging; begin method X, end method X
+
+            var msg = "Log FROM " + this.GetType().Name + " " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            _logger.LogWarning(msg);
 
             var values = Enum.GetValues(typeof(LogLevel));
             foreach (var value in values)
             {
                 var level = (LogLevel)(value);
-                _logger.Log(level, msg + " " +level);
+                //LogHelper.Debug(msg + " " + level);
+
+
+                var logHelper = LogHelper.Instance;
+                var simpleLog = logHelper.GetLogger();
+                simpleLog.Log(msg + " " + level, (SimpleLogLevel)value);
             }
 
             return msg;
