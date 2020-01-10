@@ -18,7 +18,14 @@ namespace LogCenter.Web.Apis
         public string GetLog()
         {
             var msg ="Log FROM " + this.GetType().Name + " " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            _logger.LogWarning(msg);
+
+            var values = Enum.GetValues(typeof(LogLevel));
+            foreach (var value in values)
+            {
+                var level = (LogLevel)(value);
+                _logger.Log(level, msg + " " +level);
+            }
+
             return msg;
         }
     }

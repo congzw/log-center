@@ -364,12 +364,15 @@ namespace LogCenter.Common
     //public class LogToNetCoreLoggingConfig
     //{
     //    private static bool init = false;
-    //    public static void Setup()
+    //    private static Microsoft.Extensions.Logging.ILoggerFactory _loggerFactory = null;
+    //    public static void Setup(Microsoft.Extensions.Logging.ILoggerFactory loggerFactory)
     //    {
     //        if (init)
     //        {
     //            return;
     //        }
+
+    //        _loggerFactory = loggerFactory;
     //        var simpleLogFactory = SimpleLogFactory.Resolve();
     //        var logMessageActions = simpleLogFactory.LogActions;
     //        ////禁用默认的Debug
@@ -386,8 +389,7 @@ namespace LogCenter.Common
     //            return;
     //        }
 
-    //        var loggerFactory = MyLogConfig.Instance.Factory;
-    //        var logger = loggerFactory.CreateLogger(args.Category);
+    //        var logger = _loggerFactory.CreateLogger(args.Category);
     //        logger.Log((LogLevel)args.Level, args.Message?.ToString());
     //    }
     //}
