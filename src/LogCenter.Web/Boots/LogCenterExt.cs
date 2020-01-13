@@ -18,6 +18,7 @@ namespace LogCenter.Web.Boots
             _hostingEnv = hostingEnv;
             _configuration = configuration;
 
+            services.AddSingleton<IServiceLocator, HttpRequestServiceLocator>();
             AddCenterLogLogging(services);
             return services;
         }
@@ -26,6 +27,8 @@ namespace LogCenter.Web.Boots
         {
             _applicationLifetime = applicationLifetime;
             UseLogCenterStaticFiles(app);
+
+            ServiceLocator.Initialize(app.ApplicationServices.GetService<IServiceLocator>());
             UseCenterLogLogging(app);
         }
 

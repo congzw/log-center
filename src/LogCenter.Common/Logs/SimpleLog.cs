@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
+// ReSharper disable once CheckNamespace
 namespace LogCenter.Common
 {
     //内部使用的简单日志，不依赖任何第三方类库
@@ -399,51 +400,13 @@ namespace LogCenter.Common
 
     #endregion
 
-    #region demo for init log for net core logging
-
-
-    ////how to use: => LogToNetCoreLoggingConfig.Setup();
-    //public class LogToNetCoreLoggingConfig
-    //{
-    //    private static bool init = false;
-    //    private static Microsoft.Extensions.Logging.ILoggerFactory _loggerFactory = null;
-    //    public static void Setup(Microsoft.Extensions.Logging.ILoggerFactory loggerFactory)
-    //    {
-    //        if (init)
-    //        {
-    //            return;
-    //        }
-
-    //        _loggerFactory = loggerFactory;
-    //        var simpleLogFactory = SimpleLogFactory.Resolve();
-    //        var logMessageActions = simpleLogFactory.LogActions;
-    //        ////禁用默认的Debug
-    //        //logMessageActions["Default"].Enabled = false;
-
-    //        //适配到 => NetCoreLogging
-    //        logMessageActions.SetActions("NetCoreLogging", true, LogToNetCoreLogging);
-    //        init = true;
-    //    }
-    //    private static void LogToNetCoreLogging(LogMessageArgs args)
-    //    {
-    //        if (args == null)
-    //        {
-    //            return;
-    //        }
-
-    //        var logger = _loggerFactory.CreateLogger(args.Category);
-    //        logger.Log((LogLevel)args.Level, args.Message?.ToString());
-    //    }
-    //}
-
     #endregion
-    #endregion
-        
+
+    //how to use: => SimpleLogHelper.InitSimpleLog();
     public class SimpleLogHelper : ILogHelper
     {
         public void Log(string message, int level)
         {
-            var simpleLogLevel = level.AsSimpleLogLevel();
             var simpleLog = GetLogger(null);
             simpleLog.Log(message, level.AsSimpleLogLevel());
         }
@@ -456,38 +419,11 @@ namespace LogCenter.Common
         #region extensions for SimpleLog
 
         private static readonly ILogHelper _default = new SimpleLogHelper();
-        public static void Init()
+        public static void InitSimpleLog()
         {
             LogHelper.Resolve = () => _default;
         }
 
         #endregion
     }
-
-    //utils code only use LogHelper
-    //public class LogHelper
-    //{
-    //    public ISimpleLog GetLogger(string category = null)
-    //    {
-    //        var logger = SimpleLogFactory.Resolve().GetOrCreate(category);
-    //        return logger;
-    //    }
-
-    //    public static LogHelper Instance = new LogHelper();
-
-    //    public static void Debug(object message)
-    //    {
-    //        Instance.GetLogger().Debug(message);
-    //    }
-
-    //    public static void Info(object message)
-    //    {
-    //        Instance.GetLogger().Log(message, SimpleLogLevel.Information);
-    //    }
-
-    //    public static void Error(Exception ex, string message = null)
-    //    {
-    //        Instance.GetLogger().Ex(ex, message);
-    //    }
-    //}
 }

@@ -18,6 +18,9 @@ namespace LogCenter.Web.Apis
         [HttpGet("GetLog")]
         public string GetLog()
         {
+            var serviceLocator = ServiceLocator.Current;
+            var service = serviceLocator.GetService<ILogger>();
+
             //Level Typical Use
 
             //Fatal   Something bad happened; application is going down
