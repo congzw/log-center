@@ -40,6 +40,8 @@ namespace LogCenter.Web.Boots
             _logger.LogInformation(">>>>>>>>>>>>>>>>>>>>>>>> NetCoreLogConfig.Setup OK");
             //NetCoreLogConfig.EnableDefault(false);
 
+            SimpleLogHelper.Init();
+
             var applicationLifetime = app.ApplicationServices.GetService<IApplicationLifetime>();
             applicationLifetime.ApplicationStopping.Register(OnShutdown);
         }

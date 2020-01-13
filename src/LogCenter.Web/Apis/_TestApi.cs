@@ -31,15 +31,16 @@ namespace LogCenter.Web.Apis
             _logger.LogWarning(msg);
 
             var values = Enum.GetValues(typeof(LogLevel));
-            foreach (var value in values)
+            foreach (int value in values)
             {
-                var level = (LogLevel)(value);
+                //var level = (LogLevel)(value);
                 //LogHelper.Debug(msg + " " + level);
-
-
+                
                 var logHelper = LogHelper.Instance;
-                var simpleLog = logHelper.GetLogger();
-                simpleLog.Log(msg + " " + level, (SimpleLogLevel)value);
+                logHelper.Log(msg, value);
+
+                //var simpleLog = logHelper.GetLogger();
+                //simpleLog.Log(msg + " " + level, (SimpleLogLevel)value);
             }
 
             return msg;

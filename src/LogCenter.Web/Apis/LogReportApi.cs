@@ -61,12 +61,12 @@ namespace LogCenter.Web.Apis
             }
 
             var logHelper = LogHelper.Instance;
-            var simpleLog = logHelper.GetLogger(args.Category);
+            //var simpleLog = logHelper.GetLogger(args.Category);
+            //var simpleLogLevel = Parse(args.Level);
+            ////not block
+            //simpleLog.Log(args.Message, simpleLogLevel);
 
-            var simpleLogLevel = Parse(args.Level);
-
-            //not block
-            simpleLog.Log(args.Message, simpleLogLevel);
+            logHelper.Log(args.Message?.ToString(), args.Level);
 
             messageResult.Success = true;
             return Task.FromResult(messageResult);
