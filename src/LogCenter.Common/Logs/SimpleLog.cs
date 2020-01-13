@@ -82,11 +82,12 @@ namespace LogCenter.Common
             {
                 return SimpleLogLevel.Error;
             }
-            if (level <= 5)
-            {
-                return SimpleLogLevel.Critical;
-            }
-            return SimpleLogLevel.None;
+            //if (level <= 5)
+            //{
+            //    return SimpleLogLevel.Critical;
+            //}
+            //return SimpleLogLevel.None;
+            return SimpleLogLevel.Critical;
         }
 
         public static bool ShouldLog(this SimpleLogLevel currentLevel, SimpleLogLevel enabledLevel)

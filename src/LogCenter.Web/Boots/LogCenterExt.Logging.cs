@@ -132,11 +132,12 @@ namespace LogCenter.Web.Boots
             {
                 return LogLevel.Error;
             }
-            if (level <= 5)
-            {
-                return LogLevel.Critical;
-            }
-            return LogLevel.None;
+            //if (level <= 5)
+            //{
+            //    return LogLevel.Critical;
+            //}
+            //return LogLevel.None;
+            return LogLevel.Critical;
         }
 
         public static ILogger GetLogger(this ILogHelper helper, string categoryName)

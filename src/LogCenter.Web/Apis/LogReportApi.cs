@@ -61,52 +61,10 @@ namespace LogCenter.Web.Apis
             }
 
             var logHelper = LogHelper.Instance;
-            //var simpleLog = logHelper.GetLogger(args.Category);
-            //var simpleLogLevel = Parse(args.Level);
-            ////not block
-            //simpleLog.Log(args.Message, simpleLogLevel);
-
             logHelper.Log(args.Message?.ToString(), args.Level);
 
             messageResult.Success = true;
             return Task.FromResult(messageResult);
-        }
-
-        private SimpleLogLevel Parse(int level)
-        {
-            //Trace = 0,
-            //Debug = 1,
-            //Information = 2,
-            //Warning = 3,
-            //Error = 4,
-            //Critical = 5,
-            //None = 6
-
-            if (level <= 0)
-            {
-                return SimpleLogLevel.Trace;
-            }
-            if (level <= 1)
-            {
-                return SimpleLogLevel.Debug;
-            }
-            if (level <= 2)
-            {
-                return SimpleLogLevel.Information;
-            }
-            if (level <= 3)
-            {
-                return SimpleLogLevel.Warning;
-            }
-            if (level <= 4)
-            {
-                return SimpleLogLevel.Error;
-            }
-            if (level <= 5)
-            {
-                return SimpleLogLevel.Critical;
-            }
-            return SimpleLogLevel.None;
         }
     }
 }
