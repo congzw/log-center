@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using LogCenter.Common;
+using LogCenter.Web.Boots;
 using LogCenter.Web.Domains;
 using Microsoft.AspNetCore.SignalR;
 
@@ -32,6 +33,7 @@ namespace LogCenter.Web.Hubs
             try
             {
                 validateResult.Message += "=> Success From All";
+                CallServerLog(args);
                 await this.Clients.All.SendAsync(HubConst.ReportLogCallback, validateResult);
             }
             catch (Exception ex)
@@ -40,6 +42,19 @@ namespace LogCenter.Web.Hubs
                 validateResult.Message = ex.Message;
                 validateResult.Success = false;
                 await this.Clients.Caller.SendAsync(HubConst.ReportLogCallback, validateResult);
+            }
+        }
+
+        private void CallServerLog(ReportLogArgs args)
+        {
+            var logHelper = LogHelper.Instance;
+            if (!string.IsNullOrWhiteSpace(args.Category))
+            {
+                logHelper.Log(args.Category + " " + args.Message, args.Level);
+            }
+            else
+            {
+                logHelper.Log(args.Message?.ToString(), args.Level);
             }
         }
     }

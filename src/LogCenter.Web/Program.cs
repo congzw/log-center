@@ -16,7 +16,6 @@ namespace LogCenter.Web
         {
             var baseDirectory = GetBaseDirectory();
             var configuration = new ConfigurationBuilder().SetBasePath(baseDirectory)
-                .AddJsonFile("LogCenterConfig.json", true)
                 .Build();
 
             var webHostBuilder = WebHost.CreateDefaultBuilder(args)

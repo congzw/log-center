@@ -772,3 +772,38 @@
 2020-01-15 16:17:56.1917 Info Adding target FileTarget(Name=all)
 2020-01-15 16:17:56.2012 Info Adding target FileTarget(Name=application)
 2020-01-15 16:17:56.2515 Info Found 41 configuration items
+2020-01-15 16:21:11.1350 Info Message Template Auto Format enabled
+2020-01-15 16:21:11.1464 Info Loading assembly: NLog.Web.AspNetCore
+2020-01-15 16:21:11.2295 Info Adding target FileTarget(Name=all)
+2020-01-15 16:21:11.2295 Info Adding target FileTarget(Name=application)
+2020-01-15 16:21:11.2861 Info Found 41 configuration items
+2020-01-15 16:27:36.8118 Info Message Template Auto Format enabled
+2020-01-15 16:27:36.8118 Info Loading assembly: NLog.Web.AspNetCore
+2020-01-15 16:27:36.8838 Info Adding target FileTarget(Name=all)
+2020-01-15 16:27:36.8867 Info Adding target FileTarget(Name=application)
+2020-01-15 16:27:36.9245 Info Found 41 configuration items
+2020-01-15 16:29:39.6285 Info Message Template Auto Format enabled
+2020-01-15 16:29:39.6386 Info Loading assembly: NLog.Web.AspNetCore
+2020-01-15 16:29:39.7032 Info Adding target FileTarget(Name=all)
+2020-01-15 16:29:39.7032 Info Adding target FileTarget(Name=application)
+2020-01-15 16:29:39.7433 Info Found 41 configuration items
+2020-01-15 16:32:29.2373 Info Message Template Auto Format enabled
+2020-01-15 16:32:29.2449 Info Loading assembly: NLog.Web.AspNetCore
+2020-01-15 16:32:29.3107 Info Adding target FileTarget(Name=all)
+2020-01-15 16:32:29.3107 Info Adding target FileTarget(Name=application)
+2020-01-15 16:32:29.3516 Info Found 41 configuration items
+2020-01-15 16:52:03.0226 Info Message Template Auto Format enabled
+2020-01-15 16:52:03.0331 Info Loading assembly: NLog.Web.AspNetCore
+2020-01-15 16:52:03.1143 Info Adding target FileTarget(Name=all)
+2020-01-15 16:52:03.1143 Info Adding target FileTarget(Name=application)
+2020-01-15 16:52:03.1572 Info Found 41 configuration items
+2020-01-15 16:55:08.7219 Info Message Template Auto Format enabled
+2020-01-15 16:55:08.7323 Info Loading assembly: NLog.Web.AspNetCore
+2020-01-15 16:55:08.8113 Info Adding target FileTarget(Name=all)
+2020-01-15 16:55:08.8113 Info Adding target FileTarget(Name=application)
+2020-01-15 16:55:08.8581 Info Found 41 configuration items
+2020-01-15 16:55:39.6447 Info Message Template Auto Format enabled
+2020-01-15 16:55:39.6580 Info Loading assembly: NLog.Web.AspNetCore
+2020-01-15 16:55:39.7421 Info Adding target FileTarget(Name=all)
+2020-01-15 16:55:39.7421 Info Adding target FileTarget(Name=application)
+2020-01-15 16:55:39.7897 Info Found 41 configuration items
