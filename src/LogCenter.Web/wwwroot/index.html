@@ -34,20 +34,13 @@
 
         var logger = nb.log;
         var hubUri = "/hubs/logHub";
-        var connection = new signalR.HubConnectionBuilder()
-            .withUrl(hubUri, {})
-            .build();
-
         var logHubHelper = logHubHelper();
 
-        connection.start()
-            .then(() => {
-                logHubHelper.init({
-                    logger: logger,
-                    connection: connection
-                });
-            })
-            .catch(err => console.error(err));
+        logHubHelper.init({
+            logger: logger,
+            hubUri: hubUri,
+            category: "DemoClientJs"
+        });
 
         //code below just for demo!
         var demoInit = function() {

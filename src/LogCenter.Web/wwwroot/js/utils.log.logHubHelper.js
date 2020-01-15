@@ -3,6 +3,7 @@ function logHubHelper() {
 
     const ReportLog = "ReportLog";
     const ReportLogCallback = "ReportLogCallback";
+    let category = "ClientJs";
     let showLevel = 0;
     let levels = {
         0: 'Trace',
@@ -46,7 +47,7 @@ function logHubHelper() {
     function replaceLog(connection, theLog) {
         theLog.log = function (logObject, logLevel) {
             var reportLogArgs = {
-                Category: "ClientJs",
+                Category: category,
                 Message: logObject,
                 Level: logLevel
             };
@@ -61,19 +62,30 @@ function logHubHelper() {
 
     function init(options) {
 
-        let connection = options.connection;
+        let hubUri = options.hubUri;
         let logger = options.logger;
+        if (options.category) {
+            category = options.category;
+        }
+        let connection = new signalR.HubConnectionBuilder()
+            .withUrl(hubUri, {})
+            .build();
+        
+        connection.start()
+            .then(() => {
+                
+                //替换Log方法
+                replaceLog(connection, logger);
 
-        //替换Log方法
-        replaceLog(connection, logger);
-
-        //监听InvokeMethod方法
-        connection.on(ReportLogCallback,
-            (result) => {
-                if (result && result.success) {
-                    colorLog(result.data);
-                }
-            });
+                //监听InvokeMethod方法
+                connection.on(ReportLogCallback,
+                    (result) => {
+                        if (result && result.success) {
+                            colorLog(result.data);
+                        }
+                    });
+            })
+            .catch(err => console.error(err));
     }
 
     return {
