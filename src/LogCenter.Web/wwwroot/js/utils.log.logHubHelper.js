@@ -68,12 +68,16 @@ function logHubHelper() {
             category = options.category;
         }
         let connection = new signalR.HubConnectionBuilder()
-            .withUrl(hubUri, {})
+            .withUrl(hubUri,
+                {
+                    skipNegotiation: true,
+                    transport: signalR.HttpTransportType.WebSockets
+                })
             .build();
-        
-        connection.start()
+
+        connection.start({ jsonp: true })
             .then(() => {
-                
+
                 //替换Log方法
                 replaceLog(connection, logger);
 

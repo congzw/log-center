@@ -20,23 +20,27 @@ namespace LogCenter.Web.Hubs
 
         public virtual async Task ReportLog(ReportLogArgs args)
         {
-            var result = args.Validate();
-            if (!result.Success)
+            var validateResult = args.Validate();
+            validateResult.Data = args;
+
+            if (!validateResult.Success)
             {
-                await this.Clients.Caller.SendAsync(HubConst.ReportLogCallback, result);
+                validateResult.Message += "=> Failed From Caller";
+                await this.Clients.Caller.SendAsync(HubConst.ReportLogCallback, validateResult);
             }
 
             try
             {
-                await this.Clients.Others.SendAsync(HubConst.ReportLog, args);
+                validateResult.Message += "=> Success From All";
+                await this.Clients.All.SendAsync(HubConst.ReportLogCallback, validateResult);
             }
             catch (Exception ex)
             {
-                result.Message = ex.Message;
-                result.Success = false;
+                validateResult.Message += "=> Ex From Caller";
+                validateResult.Message = ex.Message;
+                validateResult.Success = false;
+                await this.Clients.Caller.SendAsync(HubConst.ReportLogCallback, validateResult);
             }
-
-            await this.Clients.Caller.SendAsync(HubConst.ReportLogCallback, result);
         }
     }
 }
