@@ -1,6 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using LogCenter.Common;
+using LogCenter.Web.Boots;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace LogCenter.Web.Apis
 {
@@ -51,20 +54,51 @@ namespace LogCenter.Web.Apis
         private Task<MessageResult> ReportAsync(ReportLogArgs args)
         {
             var messageResult = new MessageResult();
+            var logHelper = LogHelper.Instance;
             if (!ReportLogArgs.Validate(args, out var vMessage))
             {
                 //not block it
-                LogHelper.Debug("Bad Request For LogReportApi: " + vMessage);
-
+                logHelper.Warn("Bad Request For LogReportApi: " + vMessage);
                 messageResult.Message = vMessage;
                 return Task.FromResult(messageResult);
             }
 
-            var logHelper = LogHelper.Instance;
-            logHelper.Log(args.Message?.ToString(), args.Level);
+            var logger = logHelper.GetLogger(args.Category);
+            logger.Log(args.Level.AsLogLevel(), args.Message?.ToString());
 
             messageResult.Success = true;
             return Task.FromResult(messageResult);
         }
     }
+
+    public class RemoteLogProvider : ILoggerProvider
+    {
+        public void Dispose()
+        {
+        }
+
+        public ILogger CreateLogger(string categoryName)
+        {
+            throw new System.NotImplementedException();
+        }
+    }
+
+    public class RemoteLogger : ILogger
+    {
+        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsEnabled(LogLevel logLevel)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDisposable BeginScope<TState>(TState state)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
 }

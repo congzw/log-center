@@ -6,6 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LogCenter.Web.Boots
 {
+    //how to use:
+    //1 setup => services.AddSingleton<IServiceLocator, HttpRequestServiceLocator>();
+    //2 use => ServiceLocator.Initialize(app.ApplicationServices.GetService<IServiceLocator>());
     public class HttpRequestServiceLocator : IServiceLocator
     {
         private readonly IServiceProvider _serviceProvider;

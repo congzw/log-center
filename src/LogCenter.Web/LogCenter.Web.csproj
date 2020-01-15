@@ -13,13 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Hubs\" />
-    <Folder Include="Domains\" />
-    <Folder Include="wwwroot\css\" />
-    <Folder Include="wwwroot\js\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="wwwroot\favicon.ico" />
     <None Include="wwwroot\index.html" />
   </ItemGroup>
