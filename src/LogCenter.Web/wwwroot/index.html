@@ -3,11 +3,11 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="css/bootstrap.css" rel="stylesheet" />
-    <script src="libs/jquery.js"></script>
-    <script src="libs/signalr.js"></script>
-    <script src="js/utils.log.js"></script>
-    <script src="js/utils.log.logHubHelper.js"></script>
+    <link href="lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+    <script src="lib/jquery/dist/jquery.js"></script>
+    <script src="lib/signalR/signalr.js"></script>
+    <script src="lib/logs/zonekey.log.js"></script>
+    <script src="lib/logs/zonekey.log.logHubHelper.js"></script>
 </head>
 <body>
 
@@ -32,20 +32,21 @@
     </div>
     <script>
 
-        var logger = nb.log;
-        //var hubUri = "http://192.168.1.235:8000/hubs/logHub";
-        var hubUri = "/hubs/logHub";
+        //todo config
+        var hubUri = "http://192.168.1.235:8000/hubs/logHub";
+        var logger = zonekey.log;
+        //var hubUri = "/hubs/logHub";
         var logHubHelper = logHubHelper();
 
         logHubHelper.init({
             logger: logger,
             hubUri: hubUri,
-            category: "DemoClientJs"
+            category: "HblClientJs"
         });
-        
+
         //code below just for demo!
         var demoInit = function() {
-            
+
             $('#showLevel').on('change',
                 function(e) {
                     var optionSelected = $("option:selected", this);
@@ -57,9 +58,10 @@
 
                 let date = new Date();
                 var msg = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + ' ' + date.getMilliseconds();
-                logger.debug(msg);
+                logger.trace(msg, "foo");
+                logger.debug(msg, "foo");
                 logger.info(msg);
-                logger.warn(msg);
+                logger.warn(msg, "bar");
                 logger.error(msg);
             });
         }();

@@ -45,12 +45,19 @@ function logHubHelper() {
     }
 
     function replaceLog(connection, theLog) {
-        theLog.log = function (logObject, logLevel) {
+        theLog.log = function (logObject, logLevel, prefix) {
+
             var reportLogArgs = {
                 Category: category,
                 Message: logObject,
                 Level: logLevel
             };
+
+            if (typeof (prefix) === "string" && prefix !== null && prefix !== undefined) {
+                reportLogArgs.Category = category +  "[" + prefix + "]";
+            } 
+
+            console.log(reportLogArgs);
             connection.invoke(ReportLog, reportLogArgs)
                 .catch(err => console.error(err));
         }
