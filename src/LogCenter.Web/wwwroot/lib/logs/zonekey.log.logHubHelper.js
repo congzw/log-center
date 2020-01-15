@@ -13,6 +13,12 @@ function logHubHelper() {
         4: 'Error',
         5: 'Fatal'
     };
+    let _enabled = true;
+
+    let _connection = null;
+    let _logger = null;
+    let _oldLog = null;
+    let _newLog = null;
 
     function colorLog(logArgs) {
         var message = logArgs.message;
@@ -45,7 +51,11 @@ function logHubHelper() {
     }
 
     function replaceLog(connection, theLog) {
-        theLog.log = function (logObject, logLevel, prefix) {
+
+        _connection = connection;
+        _logger = theLog;
+        _oldLog = theLog.log;
+        _newLog = function (logObject, logLevel, prefix) {
 
             var reportLogArgs = {
                 Category: category,
@@ -54,17 +64,28 @@ function logHubHelper() {
             };
 
             if (typeof (prefix) === "string" && prefix !== null && prefix !== undefined) {
-                reportLogArgs.Category = category +  "[" + prefix + "]";
-            } 
+                reportLogArgs.Category = category + "[" + prefix + "]";
+            }
 
             console.log(reportLogArgs);
-            connection.invoke(ReportLog, reportLogArgs)
+            _connection.invoke(ReportLog, reportLogArgs)
                 .catch(err => console.error(err));
-        }
+        };
+
+        _logger.log = _newLog;
     }
 
     function setShowLevel(level) {
         showLevel = level;
+    }
+
+    function setEnable(enabled) {
+        _enabled = enabled;
+        if (_enabled) {
+            _logger.log = _newLog;
+        } else {
+            _logger.log = _oldLog;
+        }
     }
 
     function init(options) {
@@ -101,6 +122,7 @@ function logHubHelper() {
 
     return {
         setShowLevel: setShowLevel,
+        setEnable: setEnable,
         init: init
     };
 };

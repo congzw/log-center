@@ -27,15 +27,16 @@
                     <option value="4" style="color: red">Error</option>
                     <option value="5" style="color: darkred">Fatal</option>
                 </select>
+                <button id="btnEnabled" class="btn-warning">远程</button>
             </div>
         </div>
     </div>
     <script>
 
         //todo config
+        //var hubUri = "/hubs/logHub";
         var hubUri = "http://192.168.1.235:8000/hubs/logHub";
         var logger = zonekey.log;
-        //var hubUri = "/hubs/logHub";
         var logHubHelper = logHubHelper();
 
         logHubHelper.init({
@@ -44,11 +45,12 @@
             category: "HblClientJs"
         });
 
+        let enabled = true;
         //code below just for demo!
-        var demoInit = function() {
+        var demoInit = function () {
 
             $('#showLevel').on('change',
-                function(e) {
+                function (e) {
                     var optionSelected = $("option:selected", this);
                     var showLevel = optionSelected.val();
                     logHubHelper.setShowLevel(showLevel);
@@ -64,9 +66,21 @@
                 logger.warn(msg, "bar");
                 logger.error(msg);
             });
+
+            var $btnEnabled = $("#btnEnabled");
+            $btnEnabled.text("启用");
+
+            $("#btnEnabled").click(function () {
+
+                enabled = !enabled;
+                logHubHelper.setEnable(enabled);
+                if (enabled) {
+                    $btnEnabled.text("禁用");
+                } else {
+                    $btnEnabled.text("启用");
+                }
+            });
         }();
     </script>
-
 </body>
-
 </html>
