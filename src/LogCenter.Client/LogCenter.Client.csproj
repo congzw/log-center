@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LogCenter.Common\LogCenter.Common.csproj" />
+    <ProjectReference Include="..\LogCenter.Proxy\LogCenter.Proxy.csproj" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JSONSchema="" /></VisualStudio></ProjectExtensions>

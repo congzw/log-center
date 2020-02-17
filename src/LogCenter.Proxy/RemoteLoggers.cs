@@ -7,22 +7,8 @@ using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace LogCenter.Client.Boots
+namespace LogCenter.Proxy
 {
-    public static partial class LogCenterExt
-    {
-        public static ILoggingBuilder AddRemoteLog(this ILoggingBuilder builder, string hubUri, bool enabled)
-        {
-            var reporter = RemoteHubReporter.Instance;
-            reporter.HubUri = hubUri;
-            reporter.Enabled = enabled;
-
-            builder.Services.AddSingleton(RemoteHubReporter.Instance);
-            builder.AddProvider(new RemoteLoggerProvider());
-            return builder;
-        }
-    }
-
     public class RemoteLogger : ILogger
     {
         public string Category { get; set; }
@@ -52,6 +38,7 @@ namespace LogCenter.Client.Boots
         }
     }
 
+    [ProviderAlias("RemoteLogCenter")]
     public class RemoteLoggerProvider : ILoggerProvider
     {
         public IDictionary<string, RemoteLogger> RemoteLoggers { get; set; } = new ConcurrentDictionary<string, RemoteLogger>(StringComparer.OrdinalIgnoreCase);
@@ -128,5 +115,19 @@ namespace LogCenter.Client.Boots
         }
 
         public static RemoteHubReporter Instance = new RemoteHubReporter();
+    }
+
+    public static class RemoteLoggerExt
+    {
+        public static ILoggingBuilder AddRemoteLog(this ILoggingBuilder builder, string hubUri, bool enabled)
+        {
+            var reporter = RemoteHubReporter.Instance;
+            reporter.HubUri = hubUri;
+            reporter.Enabled = enabled;
+
+            builder.Services.AddSingleton(RemoteHubReporter.Instance);
+            builder.AddProvider(new RemoteLoggerProvider());
+            return builder;
+        }
     }
 }

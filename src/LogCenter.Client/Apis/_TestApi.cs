@@ -1,6 +1,7 @@
 ﻿using System;
 using LogCenter.Client.Boots;
 using LogCenter.Common;
+using LogCenter.Proxy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -38,13 +39,10 @@ namespace LogCenter.Client.Apis
             }
             return msg;
         }
-
-        private static bool enabled = true;
-
-        [HttpGet("SetEnabled")]
-        public string SetEnabled()
+        
+        [HttpGet("SetRemoteLogEnabled")]
+        public string SetRemoteLogEnabled(bool enabled)
         {
-            enabled = !enabled;
             var remoteHubReporter = RemoteHubReporter.Instance;
             remoteHubReporter.Enabled = enabled;
             return "enabled: " + enabled;

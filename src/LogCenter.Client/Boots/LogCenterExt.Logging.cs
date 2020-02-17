@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using LogCenter.Proxy;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -12,6 +13,7 @@ namespace LogCenter.Client.Boots
             {
                 //a hack for ILogger injection!
 
+                //should read from config! eg: => var hubUri = "ws://192.168.1.235:8000/hubs/logHub";
                 var hubUri = "ws://localhost:1635/hubs/logHub";
                 config.ClearProviders();
                 config.AddConsole();
