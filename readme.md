@@ -11,8 +11,9 @@
 ## structure
 
 - 演示程序：LogCenter.Client
-- 客户端引用库：LogCenter.Proxy
-
+- 客户端引用库：
+	- C#: LogCenter.Proxy.dll
+	- JS: zonekey.log.logHubHelper.js
 - 日志服务：
 	- LogCenter.Common
 	- LogCenter.Web
