@@ -1,24 +1,34 @@
-# a simple log center
+ï»¿# a simple log center
 
 ## desc
 
-Ö§³Ö·şÎñÆ÷¶ËµÄÈÕÖ¾¹ıÂË
+![system structure][system_structure]
 
-1 Àà¿âÖĞ£¨LogCenter.Proxy£©£¬ÉùÃ÷ÁËÈÕÖ¾µÄ±ğÃû[ProviderAlias("RemoteLogCenter")]
-2 ¿Í»§¶Ë£¨LogCenter.Client£©£¬Í¨¹ıappsettings.jsonÖĞÅäÖÃ½ÚRemoteLogCenter£¬À´¿ØÖÆÔ¶¶ËµÄÈÕÖ¾Êä³ö
-3 Ò²¿ÉÒÔÍ¨¹ıRemoteHubReporter.EnabledÀ´¿ØÖÆÊÇ·ñÍ£ÓÃ
+æ”¯æŒæœåŠ¡å™¨ç«¯çš„æ—¥å¿—è¿‡æ»¤
+
+1 ç±»åº“ä¸­ï¼ˆLogCenter.Proxyï¼‰ï¼Œå£°æ˜äº†æ—¥å¿—çš„åˆ«å[ProviderAlias("RemoteLogCenter")]
+2 å®¢æˆ·ç«¯ï¼ˆLogCenter.Clientï¼‰ï¼Œé€šè¿‡appsettings.jsonä¸­é…ç½®èŠ‚RemoteLogCenterï¼Œæ¥æ§åˆ¶è¿œç«¯çš„æ—¥å¿—è¾“å‡º
+3 ä¹Ÿå¯ä»¥é€šè¿‡RemoteHubReporter.Enabledæ¥æ§åˆ¶æ˜¯å¦åœç”¨
+
+## change list
+
+- 20200219 add projects
+- 20200219 init
 
 ## structure
 
-- ÑİÊ¾³ÌĞò£ºLogCenter.Client
-- ¿Í»§¶ËÒıÓÃ¿â£º
+- æ¼”ç¤ºç¨‹åºï¼šLogCenter.Client
+- å®¢æˆ·ç«¯å¼•ç”¨åº“ï¼š
 	- C#: LogCenter.Proxy.dll
 	- JS: zonekey.log.logHubHelper.js
-- ÈÕÖ¾·şÎñ£º
+- æ—¥å¿—æœåŠ¡ï¼š
 	- LogCenter.Common
 	- LogCenter.Web
 
 ## change list
 
+- 20200219 add docs
 - 20200217 add remote logger proxy, and client demo
 - 20200116 init 
+
+[system_structure]: doc/system_structure.png
