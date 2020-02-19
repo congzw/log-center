@@ -31,4 +31,4 @@
 - 20200217 add remote logger proxy, and client demo
 - 20200116 init 
 
-[system_structure]: ../blob/master/doc/system_structure.png?raw=true
+[system_structure]: doc/system_structure.png?raw=true
