@@ -18,24 +18,8 @@ namespace LogCenter.Web.Boots
             _configuration = configuration;
 
             services.AddSignalR();
-            //services.AddSignalR(o =>
-            //    {
-            //        o.ClientTimeoutInterval = TimeSpan.FromSeconds(10);
-            //        o.KeepAliveInterval = TimeSpan.FromSeconds(5);
-            //    })
-            //    .AddJsonProtocol(option =>
-            //    {
-            //        option.PayloadSerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-            //        option.PayloadSerializerSettings.Converters.Add(
-            //            new StringEnumConverter
-            //            {
-            //                AllowIntegerValues = false,
-            //                NamingStrategy = new CamelCaseNamingStrategy(true, true)
-            //            });
-            //    });
-
             services.AddSingleton<IServiceLocator, HttpRequestServiceLocator>();
-            AddCenterLogLogging(services);
+            AddRemoteLogsServer(services);
             return services;
         }
 
@@ -47,7 +31,7 @@ namespace LogCenter.Web.Boots
             UseLogHub(app, _hostingEnv);
 
             ServiceLocator.Initialize(app.ApplicationServices.GetService<IServiceLocator>());
-            UseCenterLogLogging(app);
+            UseRemoteLogsServer(app);
         }
 
         internal static IConfiguration GetConfiguration(this IServiceCollection services)

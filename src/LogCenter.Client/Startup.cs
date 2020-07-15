@@ -1,8 +1,10 @@
-﻿using LogCenter.Client.Boots;
+﻿using System.Collections.Generic;
+using LogCenter.Common.RemoteLogs.Client.Boots;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -67,11 +69,26 @@ namespace LogCenter.Client
                 app.UseDeveloperExceptionPage();
             }
 
+            UseMyStaticFiles(app);
+
             app.UseCors("policy");
 
             app.UseMvc();
-
+            
             app.UseLogCenter(applicationLifetime);
+        }
+
+        private void UseMyStaticFiles(IApplicationBuilder app)
+        {
+
+            app.UseDefaultFiles(new DefaultFilesOptions() { DefaultFileNames = new List<string>() { "index.html" } });
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                ContentTypeProvider = new FileExtensionContentTypeProvider
+                {
+                    Mappings = { [".vue"] = "text/html" }
+                }
+            });
         }
     }
 }

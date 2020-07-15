@@ -10,16 +10,15 @@ namespace LogCenter.Web.Boots
 {
     public static partial class LogCenterExt
     {
-        private static IServiceCollection AddCenterLogLogging(IServiceCollection services)
+        private static IServiceCollection AddRemoteLogsServer(IServiceCollection services)
         {
             services.AddLogging(config =>
             {
-                //a hack for ILogger injection!
-                config.Services.AddSingleton<LoggerWrapper>();
-                config.Services.AddSingleton<ILogger>(sp => sp.GetService<LoggerWrapper>().Logger);
                 config.Services.AddSingleton<NetCoreLogHelper>();
                 config.Services.AddSingleton<ILogHelper>(sp => sp.GetService<NetCoreLogHelper>());
-                
+                //a hack for ILogger injection!
+                config.Services.AddSingleton<ILogger>(sp => sp.GetService<NetCoreLogHelper>().Logger);
+
                 config.ClearProviders();
                 config.AddConsole();
                 config.AddDebug();
@@ -29,14 +28,12 @@ namespace LogCenter.Web.Boots
             return services;
         }
 
-        private static void UseCenterLogLogging(IApplicationBuilder app)
+        private static void UseRemoteLogsServer(IApplicationBuilder app)
         {
-            //SimpleLogHelper.InitSimpleLog();
-            
             var serviceLocator = app.ApplicationServices.GetService<IServiceLocator>();
             var logHelper = serviceLocator.GetService<NetCoreLogHelper>();
             logHelper.Info(">>>> OnInit NetCoreLogHelper Begin");
-            NetCoreLogHelper.InitNetCoreLog(serviceLocator);
+            LogHelper.Resolve = serviceLocator.GetService<NetCoreLogHelper>;
             logHelper.Info(">>>> OnInit NetCoreLogHelper Finished");
 
             var applicationLifetime = app.ApplicationServices.GetService<IApplicationLifetime>();
@@ -58,41 +55,19 @@ namespace LogCenter.Web.Boots
         }
     }
     
-    public class LoggerWrapper
-    {
-        public ILogger Logger { get; set; }
-
-        public LoggerWrapper(ILogger<LoggerWrapper> logger)
-        {
-            Logger = logger;
-        }
-    }
-
     public class NetCoreLogHelper : ILogHelper
     {
-        public IServiceLocator ServiceLocator { get; }
-
-        public NetCoreLogHelper(IServiceLocator serviceLocator)
+        public NetCoreLogHelper(ILogger<NetCoreLogHelper> loggerWrapper)
         {
-            ServiceLocator = serviceLocator;
-            DefaultLogger = ServiceLocator.GetService<ILogger>();
+            Logger = loggerWrapper ?? throw new ArgumentNullException(nameof(loggerWrapper));
         }
 
         public void Log(string message, int level)
         {
-            DefaultLogger.Log(level.AsLogLevel(), message);
+            Logger.Log(level.AsLogLevel(), message);
         }
 
-        public ILogger DefaultLogger { get; set; }
-
-        #region init for NetCoreLogHelper
-
-        public static void InitNetCoreLog(IServiceLocator serviceLocator)
-        {
-            LogHelper.Resolve = serviceLocator.GetService<NetCoreLogHelper>;
-        }
-
-        #endregion
+        public ILogger Logger { get; set; }
     }
 
     public static class NetCoreLogExtensions
@@ -133,27 +108,6 @@ namespace LogCenter.Web.Boots
             //}
             //return LogLevel.None;
             return LogLevel.Critical;
-        }
-
-        public static ILogger GetLogger(this ILogHelper helper, string categoryName)
-        {
-            var serviceLocator = ServiceLocator.Current;
-            var loggerFactory = serviceLocator.GetService<ILoggerFactory>();
-            return loggerFactory.CreateLogger(categoryName);
-        }
-
-        public static ILogger GetLogger(this ILogHelper helper, Type theType)
-        {
-            var serviceLocator = ServiceLocator.Current;
-            var loggerFactory = serviceLocator.GetService<ILoggerFactory>();
-            return loggerFactory.CreateLogger(theType);
-        }
-
-        public static ILogger GetLogger<T>(this ILogHelper helper)
-        {
-            var serviceLocator = ServiceLocator.Current;
-            var loggerFactory = serviceLocator.GetService<ILoggerFactory>();
-            return loggerFactory.CreateLogger<T>();
         }
     }
 }

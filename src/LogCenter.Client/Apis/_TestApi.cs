@@ -1,5 +1,4 @@
 ﻿using System;
-using LogCenter.Client.Boots;
 using LogCenter.Common;
 using LogCenter.Common.RemoteLogs.Client;
 using Microsoft.AspNetCore.Mvc;
