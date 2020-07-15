@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using LogCenter.Common;
+using LogCenter.Common.RemoteLogs;
 using LogCenter.Web.Boots;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -9,7 +10,7 @@ namespace LogCenter.Web.Apis
 {
     public interface ILogReportApi
     {
-        Task<MessageResult> ReportLog([FromBody]ReportLogArgs args);
+        Task<ReportLogResult> ReportLog([FromBody]ReportLogArgs args);
     }
 
     public class ReportLogArgs
@@ -46,14 +47,14 @@ namespace LogCenter.Web.Apis
     public class LogReportApi : BaseLogCenterApi, ILogReportApi
     {
         [HttpPost("Report")]
-        public Task<MessageResult> ReportLog([FromBody]ReportLogArgs args)
+        public Task<ReportLogResult> ReportLog([FromBody]ReportLogArgs args)
         {
             return ReportAsync(args);
         }
 
-        private Task<MessageResult> ReportAsync(ReportLogArgs args)
+        private Task<ReportLogResult> ReportAsync(ReportLogArgs args)
         {
-            var messageResult = new MessageResult();
+            var messageResult = new ReportLogResult();
             var logHelper = LogHelper.Instance;
             if (!ReportLogArgs.Validate(args, out var vMessage))
             {

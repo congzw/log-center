@@ -34,7 +34,7 @@ namespace LogCenter.Common
             return Enumerable.Empty<object>();
         }
     }
-     
+
     //only for static inject and old history code hacking!
     //ServiceLocator is an anti-pattern, avoid using it as possible as you can!
     public static class ServiceLocator

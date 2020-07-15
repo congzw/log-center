@@ -32,11 +32,27 @@
         </div>
     </div>
     <script>
+        
+        //function TryGetParams(name, defaultValue) {
+        //    var sPageURL = window.location.search.substring(1);
+        //    var sURLVariables = sPageURL.split('&');
+        //    for (var i = 0; i < sURLVariables.length; i++) {
+        //        var sParameterName = sURLVariables[i].split('=');
+        //        if (sParameterName[0] === name) {
+        //            return sParameterName[1];
+        //        }
+        //    }
+        //    return defaultValue;
+        //};
 
         //todo config
         //var hubUri = "/hubs/logHub";
         //var hubUri = "http://192.168.1.235:8000/hubs/logHub";
-        var hubUri = "ws://localhost:1635/hubs/logHub";
+        var hubUri = "ws://localhost:1635/hubs/logHub?LogMonitor=true";
+        //var logMonitor = TryGetParams("LogMonitor", false);
+        //if (logMonitor) {
+        //    hubUri = "ws://localhost:1635/hubs/logHub?LogMonitor=true";
+        //}
         var logger = zonekey.log;
         var logHubHelper = logHubHelper();
 

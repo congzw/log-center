@@ -1,4 +1,4 @@
-﻿using LogCenter.Proxy;
+﻿using LogCenter.Common.RemoteLogs.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

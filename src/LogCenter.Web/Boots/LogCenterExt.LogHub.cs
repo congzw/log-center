@@ -1,4 +1,4 @@
-﻿using LogCenter.Web.Hubs;
+﻿using LogCenter.Common.RemoteLogs.Server;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;

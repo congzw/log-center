@@ -13,8 +13,17 @@ function logHubHelper() {
         4: 'Error',
         5: 'Fatal'
     };
+    let colors = {
+        0: 'gray',
+        1: 'black',
+        2: 'green',
+        3: 'orange',
+        4: 'red',
+        5: 'darkred'
+    };
     let _enabled = true;
 
+    let _callerHost = null;
     let _connection = null;
     let _logger = null;
     let _oldLog = null;
@@ -29,20 +38,8 @@ function logHubHelper() {
         }
 
         var color = "gray";
-        if (logLevel <= 0) {
-            color = "gray";
-        }
-        else if (logLevel <= 1) {
-            color = "black";
-        }
-        else if (logLevel <= 2) {
-            color = "green";
-        }
-        else if (logLevel <= 3) {
-            color = "Orange";
-        }
-        else if (logLevel <= 4) {
-            color = "Red";
+        if (logLevel <= 5) {
+            color = colors[logLevel];
         } else {
             color = "darkred";
         }
@@ -55,19 +52,25 @@ function logHubHelper() {
         _connection = connection;
         _logger = theLog;
         _oldLog = theLog.log;
+
         _newLog = function (logObject, logLevel, prefix) {
 
             var reportLogArgs = {
-                Category: category,
-                Message: logObject,
-                Level: logLevel
+                category: category,
+                message: logObject,
+                level: logLevel
             };
 
             if (typeof (prefix) === "string" && prefix !== null && prefix !== undefined) {
-                reportLogArgs.Category = category + "[" + prefix + "]";
+                reportLogArgs.category = category + "[" + prefix + "]";
             }
 
-            console.log(reportLogArgs);
+            if (_callerHost) {
+                reportLogArgs.category = _callerHost + " " + reportLogArgs.category;
+            }
+
+            colorLog(reportLogArgs);
+
             _connection.invoke(ReportLog, reportLogArgs)
                 .catch(err => console.error(err));
         };
@@ -95,6 +98,9 @@ function logHubHelper() {
         if (options.category) {
             category = options.category;
         }
+        if (options.callerHost) {
+            _callerHost = options.callerHost;
+        }
         let connection = new signalR.HubConnectionBuilder()
             .withUrl(hubUri,
                 {
@@ -102,6 +108,7 @@ function logHubHelper() {
                     transport: signalR.HttpTransportType.WebSockets
                 })
             .build();
+
 
         connection.start({ jsonp: true })
             .then(() => {

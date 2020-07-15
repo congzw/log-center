@@ -1,7 +1,7 @@
 ﻿using System;
 using LogCenter.Client.Boots;
 using LogCenter.Common;
-using LogCenter.Proxy;
+using LogCenter.Common.RemoteLogs.Client;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
