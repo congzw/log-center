@@ -1,5 +1,5 @@
 ﻿using System;
-using LogCenter.Common;
+using Common.Logs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using LogCenter.Common.RemoteLogs.Client.Boots;
+using LogCenter.Client.Boots;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;

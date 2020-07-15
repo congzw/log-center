@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Common;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace LogCenter.Common.RemoteLogs.Client.Boots
+namespace LogCenter.Client.Boots
 {
-    public static class RemoteLogClientExt
+    public static class ClientBoot
     {
         private static IHostingEnvironment _hostingEnv = null;
         private static IConfiguration _configuration = null;
@@ -18,7 +19,6 @@ namespace LogCenter.Common.RemoteLogs.Client.Boots
             _configuration = configuration;
             
             services.AddSingleton<IServiceLocator, HttpRequestServiceLocator>();
-
             services.AddLogging(config =>
             {
                 //a hack for ILogger injection!
@@ -39,7 +39,17 @@ namespace LogCenter.Common.RemoteLogs.Client.Boots
             _applicationLifetime = applicationLifetime;
             ServiceLocator.Initialize(app.ApplicationServices.GetService<IServiceLocator>());
         }
+        
+        internal static ILoggingBuilder AddRemoteLog(this ILoggingBuilder builder, string hubUri, bool enabled)
+        {
+            var reporter = RemoteHubReporter.Instance;
+            reporter.HubUri = hubUri;
+            reporter.Enabled = enabled;
 
+            builder.Services.AddSingleton(RemoteHubReporter.Instance);
+            builder.AddProvider(new RemoteLoggerProvider());
+            return builder;
+        }
         internal static IConfiguration GetConfiguration(this IServiceCollection services)
         {
             return _configuration;

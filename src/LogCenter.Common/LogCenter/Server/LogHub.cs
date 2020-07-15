@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Common.Logs;
 using Microsoft.AspNetCore.SignalR;
 
-namespace LogCenter.Common.RemoteLogs.Server
+namespace LogCenter.Server
 {
     public class LogHub : Hub
     {

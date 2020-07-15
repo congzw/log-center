@@ -1,5 +1,6 @@
 ﻿using System;
-using LogCenter.Common;
+using Common;
+using Common.Logs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;

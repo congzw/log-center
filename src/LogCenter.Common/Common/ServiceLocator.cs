@@ -4,7 +4,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace LogCenter.Common
+namespace Common
 {
     public interface IServiceLocator
     {

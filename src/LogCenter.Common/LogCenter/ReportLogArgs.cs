@@ -1,4 +1,4 @@
-﻿namespace LogCenter.Common.RemoteLogs
+﻿namespace LogCenter
 {
     public class ReportLogArgs
     {

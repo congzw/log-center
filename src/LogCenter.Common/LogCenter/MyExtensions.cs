@@ -2,7 +2,7 @@
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 
-namespace LogCenter.Common.RemoteLogs
+namespace LogCenter
 {
     public static class MyExtensions
     {

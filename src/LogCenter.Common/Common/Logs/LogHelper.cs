@@ -2,7 +2,7 @@
 using System.Diagnostics;
 
 // ReSharper disable once CheckNamespace
-namespace LogCenter.Common
+namespace Common.Logs
 {
     public interface ILogHelper
     {
