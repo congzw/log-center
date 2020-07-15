@@ -79,7 +79,6 @@ namespace LogCenter.Client
 
         private void UseMyStaticFiles(IApplicationBuilder app)
         {
-
             app.UseDefaultFiles(new DefaultFilesOptions() { DefaultFileNames = new List<string>() { "index.html" } });
             app.UseStaticFiles(new StaticFileOptions
             {

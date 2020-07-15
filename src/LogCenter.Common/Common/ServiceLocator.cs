@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -79,7 +80,7 @@ namespace Common
         public T GetService<T>()
         {
             var contextAccessor = _serviceProvider.GetService<IHttpContextAccessor>();
-            var httpContext = contextAccessor.HttpContext;
+            var httpContext = contextAccessor?.HttpContext;
             if (httpContext == null)
             {
                 return _serviceProvider.GetService<T>();
@@ -90,7 +91,7 @@ namespace Common
         public IEnumerable<T> GetServices<T>()
         {
             var contextAccessor = _serviceProvider.GetService<IHttpContextAccessor>();
-            var httpContext = contextAccessor.HttpContext;
+            var httpContext = contextAccessor?.HttpContext;
             if (httpContext == null)
             {
                 return _serviceProvider.GetServices<T>();
@@ -101,7 +102,7 @@ namespace Common
         public object GetService(Type type)
         {
             var contextAccessor = _serviceProvider.GetService<IHttpContextAccessor>();
-            var httpContext = contextAccessor.HttpContext;
+            var httpContext = contextAccessor?.HttpContext;
             if (httpContext == null)
             {
                 return _serviceProvider.GetService(type);
@@ -112,12 +113,38 @@ namespace Common
         public IEnumerable<object> GetServices(Type type)
         {
             var contextAccessor = _serviceProvider.GetService<IHttpContextAccessor>();
-            var httpContext = contextAccessor.HttpContext;
+            var httpContext = contextAccessor?.HttpContext;
             if (httpContext == null)
             {
                 return _serviceProvider.GetServices(type);
             }
             return contextAccessor.HttpContext.RequestServices.GetServices(type);
+        }
+    }
+
+    public static class ServiceLocatorBoot
+    {
+        private static bool added = false;
+        private static bool used = false;
+        public static IServiceCollection AddMyServiceLocator(this IServiceCollection services)
+        {
+            if (!added)
+            {
+                services.AddSingleton<IServiceLocator, HttpRequestServiceLocator>();
+                added = true;
+            }
+            return services;
+        }
+
+        public static IApplicationBuilder UseMyServiceLocator(this IApplicationBuilder app)
+        {
+            if (!used)
+            {
+                ServiceLocator.Initialize(app.ApplicationServices.GetService<IServiceLocator>());
+                used = true;
+            }
+
+            return app;
         }
     }
 

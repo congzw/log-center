@@ -1,12 +1,15 @@
 ﻿using System;
-using LogCenter.Web.Boots;
+using System.Collections.Generic;
+using Common.Logs;
+using LogCenter.Server;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using NLog.Extensions.Logging;
 
 namespace LogCenter.Web
 {
@@ -42,7 +45,7 @@ namespace LogCenter.Web
                 corsPolicy.SupportsCredentials = false;
                 config.AddPolicy("policy", corsPolicy);
             });
-            
+
             //json setting
             services.AddMvcCore().AddJsonOptions(options =>
             {
@@ -65,7 +68,8 @@ namespace LogCenter.Web
                     //options.ClientErrorMapping[404].Link = "https://httpstatuses.com/404";
                 });
 
-            services.AddLogCenter(HostingEnvironment, Configuration);
+            services.AddLogCenterServer();
+            services.AddMyNLog();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime applicationLifetime)
@@ -77,11 +81,60 @@ namespace LogCenter.Web
                 app.UseDeveloperExceptionPage();
             }
 
+            UseMyStaticFiles(app);
+
             app.UseCors("policy");
-
+            
             app.UseMvc();
+            
+            app.UseLogCenterServer();
+            app.UseMyNLog();
+        }
 
-            app.UseLogCenter(applicationLifetime);
+        private void UseMyStaticFiles(IApplicationBuilder app)
+        {
+            app.UseDefaultFiles(new DefaultFilesOptions() { DefaultFileNames = new List<string>() { "index.html" } });
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                ContentTypeProvider = new FileExtensionContentTypeProvider
+                {
+                    Mappings = { [".vue"] = "text/html" }
+                }
+            });
+        }
+    }
+
+    public static class NLogBoot
+    {
+        public static IServiceCollection AddMyNLog(this IServiceCollection services)
+        {
+            services.AddLogging(config =>
+            {
+                config.AddNLog("nlog.config"); //for file log
+                //config.SetMinimumLevel(LogLevel.Trace);
+            });
+            return services;
+        }
+
+        public static void UseMyNLog(this IApplicationBuilder app)
+        {
+            var applicationLifetime = app.ApplicationServices.GetService<IApplicationLifetime>();
+            var logHelper = LogHelper.Resolve();
+            applicationLifetime.ApplicationStopping.Register(OnShutdownNLog, logHelper);
+        }
+        
+        private static void OnShutdownNLog(object state)
+        {
+            var logHelper = state as ILogHelper;
+            try
+            {
+                logHelper?.Info(">>>> OnShutdownNLog");
+                NLog.LogManager.Shutdown();
+            }
+            catch (Exception e)
+            {
+                logHelper?.Error(e, ">>>> OnShutdownNLog Error");
+            }
         }
     }
 }

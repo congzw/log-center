@@ -16,10 +16,10 @@ namespace LogCenter.Client
 
         public static IServiceCollection AddLogCenterClient(this IServiceCollection services, IHostingEnvironment hostingEnv, IConfiguration configuration)
         {
+            services.AddMyServiceLocator();
+            
             _hostingEnv = hostingEnv;
             _configuration = configuration;
-            
-            services.AddSingleton<IServiceLocator, HttpRequestServiceLocator>();
 
             services.Configure<RemoteHubReporterConfig>(_configuration.GetSection("RemoteHubReporter"));
             services.AddScoped(sp => sp.GetService<IOptionsSnapshot<RemoteHubReporterConfig>>().Value); //ok => use "IOptionsSnapshot<>" instead of "IOptions<>" will auto load after changed
@@ -37,9 +37,9 @@ namespace LogCenter.Client
 
         public static void UseLogCenterClient(this IApplicationBuilder app, IApplicationLifetime applicationLifetime)
         {
-            _applicationLifetime = applicationLifetime;
-            ServiceLocator.Initialize(app.ApplicationServices.GetService<IServiceLocator>());
+            app.UseMyServiceLocator();
 
+            _applicationLifetime = applicationLifetime;
             using (var scope = app.ApplicationServices.CreateScope())
             {
                 var reporter = scope.ServiceProvider.GetRequiredService<RemoteHubReporter>();
