@@ -6,8 +6,8 @@
     <link href="lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
     <script src="lib/jquery/dist/jquery.js"></script>
     <script src="lib/signalR/signalr.js"></script>
-    <script src="lib/logs/zonekey.log.js"></script>
-    <script src="lib/logs/zonekey.log.logHubHelper.js"></script>
+    <script src="lib/logs/common.log.js"></script>
+    <script src="lib/logs/common.log.logHubHelper.js"></script>
 </head>
 <body>
 
@@ -53,7 +53,7 @@
         //if (logMonitor) {
         //    hubUri = "ws://localhost:1635/hubs/logHub?LogMonitor=true";
         //}
-        var logger = zonekey.log;
+        var logger = common.log;
         var logHubHelper = logHubHelper();
 
         logHubHelper.init({

@@ -23,7 +23,7 @@
 
 - 封装组件：
 	- C#: LogCenter.Common.dll (Server  + Client)
-	- JS: zonekey.log.logHubHelper.js (Server + Client
+	- JS: common.log.logHubHelper.js (Server + Client
 
 ## change list
 
