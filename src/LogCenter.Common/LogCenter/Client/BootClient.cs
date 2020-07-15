@@ -4,48 +4,53 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
-namespace LogCenter.Client.Boots
+namespace LogCenter.Client
 {
-    public static class ClientBoot
+    public static class BootClient
     {
         private static IHostingEnvironment _hostingEnv = null;
         private static IConfiguration _configuration = null;
         private static IApplicationLifetime _applicationLifetime = null;
 
-        public static IServiceCollection AddLogCenter(this IServiceCollection services, IHostingEnvironment hostingEnv, IConfiguration configuration)
+        public static IServiceCollection AddLogCenterClient(this IServiceCollection services, IHostingEnvironment hostingEnv, IConfiguration configuration)
         {
             _hostingEnv = hostingEnv;
             _configuration = configuration;
             
             services.AddSingleton<IServiceLocator, HttpRequestServiceLocator>();
+
+            services.Configure<RemoteHubReporterConfig>(_configuration.GetSection("RemoteHubReporter"));
+            services.AddScoped(sp => sp.GetService<IOptionsSnapshot<RemoteHubReporterConfig>>().Value); //ok => use "IOptionsSnapshot<>" instead of "IOptions<>" will auto load after changed
+
             services.AddLogging(config =>
             {
-                //a hack for ILogger injection!
-
-                //should read from config! eg: => var hubUri = "ws://192.168.1.235:8000/hubs/logHub";
-                var hubUri = "ws://localhost:1635/hubs/logHub";
                 config.ClearProviders();
                 config.AddConsole();
                 config.AddDebug();
-                config.AddRemoteLog(hubUri, true);
+                config.AddRemoteLog();
             });
 
             return services;
         }
 
-        public static void UseLogCenter(this IApplicationBuilder app, IApplicationLifetime applicationLifetime)
+        public static void UseLogCenterClient(this IApplicationBuilder app, IApplicationLifetime applicationLifetime)
         {
             _applicationLifetime = applicationLifetime;
             ServiceLocator.Initialize(app.ApplicationServices.GetService<IServiceLocator>());
+
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                var reporter = scope.ServiceProvider.GetRequiredService<RemoteHubReporter>();
+                var config = scope.ServiceProvider.GetRequiredService<RemoteHubReporterConfig>();
+                var initTask = reporter.Init(config);
+                initTask.Wait();
+            }
         }
         
-        internal static ILoggingBuilder AddRemoteLog(this ILoggingBuilder builder, string hubUri, bool enabled)
+        internal static ILoggingBuilder AddRemoteLog(this ILoggingBuilder builder)
         {
-            var reporter = RemoteHubReporter.Instance;
-            reporter.HubUri = hubUri;
-            reporter.Enabled = enabled;
-
             builder.Services.AddSingleton(RemoteHubReporter.Instance);
             builder.AddProvider(new RemoteLoggerProvider());
             return builder;

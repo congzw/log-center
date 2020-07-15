@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR.Client;
 
@@ -7,65 +8,79 @@ namespace LogCenter.Client
 {
     public class RemoteHubReporter
     {
-        public bool Enabled { get; set; }
-
-        public string HubUri { get; set; }
-
+        public RemoteHubReporterConfig Config { get; set; }
         public HubConnection Connection { get; set; }
+
+        public async Task Init(RemoteHubReporterConfig config)
+        {
+            Config = config ?? throw new ArgumentNullException(nameof(config));
+            Connection = await TryInitHubConnection();
+        }
 
         public async Task ReportLog(ReportLogArgs args)
         {
-            if (!Enabled)
+            if (!Config.Enabled)
             {
                 return;
             }
 
             if (Connection == null)
             {
-                await InitAsync();
+                return;
             }
-
+            
             try
             {
                 await Connection.InvokeAsync("ReportLog", args);
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Trace.WriteLine(ex.Message);
             }
         }
-        
-        private int _maxErrorCount = 5;
-        private int _errorCount = 0;
 
-        public async Task InitAsync()
+        private async Task<HubConnection> TryInitHubConnection()
         {
-            Connection = new HubConnectionBuilder()
-                .WithUrl(HubUri)
-                .Build();
-            
-            try
+            for (int i = 0; i < Config.MaxTryCount; i++)
             {
-                await Connection.StartAsync();
-                Connection.Closed += async (ex) =>
+                try
                 {
-                    Debug.WriteLine(ex);
-                    await Task.Delay(TimeSpan.FromSeconds(1));
-                    await Connection.StartAsync();
-                };
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                _errorCount++;
-                if (_errorCount <= _maxErrorCount)
+                    var connection = await InitHubConnection();
+                    return connection;
+                }
+                catch (Exception ex)
                 {
-                    await Task.Delay(TimeSpan.FromSeconds(1));
-                    await InitAsync();
+                    Trace.WriteLine(ex.Message);
                 }
             }
+            Trace.WriteLine("TryInitHubConnection failed: " + Config.MaxTryCount);
+            return null;
+        }
+
+        private async Task<HubConnection> InitHubConnection()
+        {
+            var connection = new HubConnectionBuilder()
+                .WithUrl(Config.HubUri)
+                .Build();
+
+            await connection.StartAsync();
+            connection.Closed += async (ex) =>
+            {
+                Trace.WriteLine(ex);
+                await Task.Delay(TimeSpan.FromSeconds(1));
+                await Connection.StartAsync();
+            };
+
+            return connection;
         }
 
         public static RemoteHubReporter Instance = new RemoteHubReporter();
+    }
+
+    public class RemoteHubReporterConfig
+    {
+        public int MaxTryCount { get; set; } = 3;
+        public bool Enabled { get; set; }
+        public string HubUri { get; set; }
     }
 }

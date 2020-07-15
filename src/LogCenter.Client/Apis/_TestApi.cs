@@ -43,7 +43,7 @@ namespace LogCenter.Client.Apis
         public string SetRemoteLogEnabled(bool enabled)
         {
             var remoteHubReporter = RemoteHubReporter.Instance;
-            remoteHubReporter.Enabled = enabled;
+            remoteHubReporter.Config.Enabled = enabled;
             return "enabled: " + enabled;
         }
     }

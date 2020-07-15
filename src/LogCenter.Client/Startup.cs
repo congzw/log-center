@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using LogCenter.Client.Boots;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
@@ -57,7 +56,7 @@ namespace LogCenter.Client
                     //options.ClientErrorMapping[404].Link = "https://httpstatuses.com/404";
                 });
 
-            services.AddLogCenter(HostingEnvironment, Configuration);
+            services.AddLogCenterClient(HostingEnvironment, Configuration);
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime applicationLifetime)
@@ -75,7 +74,7 @@ namespace LogCenter.Client
 
             app.UseMvc();
             
-            app.UseLogCenter(applicationLifetime);
+            app.UseLogCenterClient(applicationLifetime);
         }
 
         private void UseMyStaticFiles(IApplicationBuilder app)
