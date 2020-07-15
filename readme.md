@@ -32,4 +32,4 @@
 - 20200217 add remote logger proxy, and client demo
 - 20200116 init 
 
-[system_structure]: doc/system_structure.png
+[system_structure]: ../raw/master/doc/system_structure.png
