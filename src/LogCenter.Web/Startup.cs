@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using Common.Logs;
 using LogCenter.Server;
 using Microsoft.AspNetCore.Builder;
@@ -7,8 +9,11 @@ using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.AspNetCore.StaticFiles.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Primitives;
 using NLog.Extensions.Logging;
 
 namespace LogCenter.Web
@@ -101,6 +106,16 @@ namespace LogCenter.Web
                     Mappings = { [".vue"] = "text/html" }
                 }
             });
+
+            //make logs directory browser ok:
+            var logsFileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "logs"));
+            var logsRequestPath = "/logs";
+            app.UseDirectoryBrowser(new DirectoryBrowserOptions
+            {
+                FileProvider = logsFileProvider,
+                RequestPath = logsRequestPath
+            });
+
         }
     }
 

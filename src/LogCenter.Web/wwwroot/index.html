@@ -44,15 +44,20 @@
         //    }
         //    return defaultValue;
         //};
-
-        //todo config
-        //var hubUri = "/hubs/logHub";
-        //var hubUri = "http://192.168.1.235:8000/hubs/logHub";
-        var hubUri = "ws://localhost:1635/hubs/logHub?LogMonitor=true";
         //var logMonitor = TryGetParams("LogMonitor", false);
         //if (logMonitor) {
         //    hubUri = "ws://localhost:1635/hubs/logHub?LogMonitor=true";
         //}
+
+        
+        function getHubUri() {
+            var host = this.window.location.host;
+            var hubUri = "ws://" + host + "/hubs/logHub?LogMonitor=true";
+            return hubUri;
+        }
+
+        //var hubUri = "ws://localhost:1635/hubs/logHub?LogMonitor=true";
+        var hubUri = getHubUri();
         var logger = common.log;
         var logHubHelper = logHubHelper();
 

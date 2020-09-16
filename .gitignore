@@ -260,5 +260,5 @@ paket-files/
 __pycache__/
 *.pyc
 
-# CodeRush
-**/*internal-nlog.txt
+# wwwroot/logs
+**/wwwroot/logs/*.txt
