@@ -59,14 +59,21 @@ namespace LogCenter.Server
 
         private void CallServerLog(ReportLogArgs args)
         {
+            //todo: support multi client logs => to diff files?
+            var clientId = args.ClientId ?? "";
+            if (!string.IsNullOrWhiteSpace(clientId))
+            {
+                clientId = clientId + " ";
+            }
+
             var logHelper = LogHelper.Instance;
             if (!string.IsNullOrWhiteSpace(args.Category))
             {
-                logHelper.Log(args.Category + " " + args.Message, args.Level);
+                logHelper.Log(clientId + args.Category + " " + args.Message, args.Level);
             }
             else
             {
-                logHelper.Log(args.Message?.ToString(), args.Level);
+                logHelper.Log(clientId + args.Message?.ToString(), args.Level);
             }
         }
     }

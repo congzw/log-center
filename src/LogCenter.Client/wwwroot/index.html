@@ -27,25 +27,20 @@
                     <option value="4" style="color: red">Error</option>
                     <option value="5" style="color: darkred">Fatal</option>
                 </select>
-                <button id="btnEnabled" class="btn-warning">远程</button>
+                <button id="btnEnabled" class="btn-warning">初始化</button>
             </div>
         </div>
     </div>
     <script>
+        
+        function getHubUri() {
+            var host = this.window.location.host;
+            var hubUri = "ws://" + host + "/hubs/logHub?LogMonitor=true";
+            return hubUri;
+        }
 
-        //todo config
-        //var hubUri = "/hubs/logHub";
-        //var hubUri = "ws://192.168.1.235:8000/hubs/logHub";
-        var hubUri = "ws://localhost:1635/hubs/logHub";
         var logger = common.log;
         var logHubHelper = logHubHelper();
-
-        logHubHelper.init({
-            logger: logger,
-            hubUri: hubUri,
-            callerHost: window.location.host,
-            category: "HblClientJs"
-        });
 
         let enabled = true;
         //code below just for demo!
@@ -70,17 +65,46 @@
             });
 
             var $btnEnabled = $("#btnEnabled");
-            $btnEnabled.text("启用");
+
+            var initByConfig = function (config) {
+
+                console.log(config);
+
+                logHubHelper.init({
+                    logger: logger,
+                    hubUri: config.hubUri,
+                    callerHost: window.location.host,
+                    category: "HblClientJs",
+                    enabled: config.enabled,
+                    clientId : config.clientId
+                });
+
+                if (config.enabled) {
+                    $btnEnabled.text("启用中");
+                } else {
+                    $btnEnabled.text("禁用中");
+                }
+            }
+
+            $.getJSON("/Api/LogCenter/Client/RemoteSetting/GetConfig")
+                .done(function (config) {
+                    initByConfig(config);
+                })
+                .fail(function (jqxhr, textStatus, error) {
+                    console.log("Request Failed: " + textStatus + ", " + error);
+                });
 
             $("#btnEnabled").click(function () {
-
                 enabled = !enabled;
-                logHubHelper.setEnable(enabled);
-                if (enabled) {
-                    $btnEnabled.text("禁用");
-                } else {
-                    $btnEnabled.text("启用");
-                }
+                var setConfigUri = "/Api/LogCenter/Client/RemoteSetting/SetEnabled?enabled=" + enabled;
+                console.log(setConfigUri);
+                $.getJSON(setConfigUri)
+                    .done(function (config) {
+                        initByConfig(config);
+                    })
+                    .fail(function (jqxhr, textStatus, error) {
+                        console.log("Request Failed: " + textStatus + ", " + error);
+                    });
             });
         }();
     </script>

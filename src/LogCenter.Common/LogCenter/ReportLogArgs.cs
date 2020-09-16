@@ -2,6 +2,10 @@
 {
     public class ReportLogArgs
     {
+        /// <summary>
+        /// 用于支持多客户端的标识
+        /// </summary>
+        public string ClientId { get; set; }
         public string Category { get; set; }
         public object Message { get; set; } //simple types or JObject
         public int Level { get; set; }

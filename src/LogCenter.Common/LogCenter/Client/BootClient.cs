@@ -21,15 +21,19 @@ namespace LogCenter.Client
             _hostingEnv = hostingEnv;
             _configuration = configuration;
 
-            services.Configure<RemoteHubReporterConfig>(_configuration.GetSection("RemoteHubReporter"));
+            var remoteSection = _configuration.GetSection("RemoteHubReporter");
+
+            services.Configure<RemoteHubReporterConfig>(remoteSection);
             services.AddScoped(sp => sp.GetService<IOptionsSnapshot<RemoteHubReporterConfig>>().Value); //ok => use "IOptionsSnapshot<>" instead of "IOptions<>" will auto load after changed
+
+            var clientId = remoteSection.GetValue("ClientId", string.Empty);
 
             services.AddLogging(config =>
             {
                 config.ClearProviders();
                 config.AddConsole();
                 config.AddDebug();
-                config.AddRemoteLog();
+                config.AddRemoteLog(clientId);
             });
 
             return services;
@@ -49,10 +53,10 @@ namespace LogCenter.Client
             }
         }
         
-        internal static ILoggingBuilder AddRemoteLog(this ILoggingBuilder builder)
+        internal static ILoggingBuilder AddRemoteLog(this ILoggingBuilder builder, string clientId)
         {
             builder.Services.AddSingleton(RemoteHubReporter.Instance);
-            builder.AddProvider(new RemoteLoggerProvider());
+            builder.AddProvider(new RemoteLoggerProvider(clientId));
             return builder;
         }
         internal static IConfiguration GetConfiguration(this IServiceCollection services)

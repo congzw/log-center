@@ -20,9 +20,61 @@
 	- C#: LogCenter.Common.dll (Server  + Client)
 	- JS: common.log.logHubHelper.js (Server + Client
 
+- Logger类型
+	- Client端发送日志，使用的Logger类型是："LogCenter.Client.RemoteLogger", 原始的日志类型，存储在其Category属性中
+	- Server端接受Hub日志，使用的Logger的类型是："LogCenter.Server.NetCoreLogHelper", 原始的日志类型，体现在message的描述中 => logHelper.Log(args.Category + " " + args.Message, args.Level)
+ 	
+## Client端的LogLevel设置：appsettings.json 
+
+通过调整Client端的appsettings.json中的RemoteLogCenter设置，可以控制发往远端的日志级别
+例如"Microsoft": "Information" => "Microsoft": "Error"，可大大降低发送到远端的日志数量
+
+``` json
+{
+    "RemoteLogCenter": {
+      "LogLevel": {
+        "Default": "Information",
+        "LogCenter": "Warning",
+        "System": "Error",
+        "Microsoft": "Error"
+      }
+    }
+}
+```
+
+## Server端的LogLevel设置：nlog.json 
+
+``` xml
+  <rules>
+    <!--All logs, including from Microsoft-->
+    <logger name="*" minlevel="Trace" writeTo="all" />
+    <!--Skip non-critical Microsoft logs and so log only own logs-->
+    <logger name="Microsoft.*" maxlevel="Info" final="true" />
+    <!-- BlackHole without writeTo -->
+    <logger name="LogCenter.*" minlevel="Debug" writeTo="application" />
+  </rules>
+```
+
+## multi client log support
+
+Client端设置：appsettings.json 
+
+``` json
+  "RemoteHubReporter": {
+    "ClientId" : "[DemoClient]", 
+    "Enabled": true,
+    "HubUri": "ws://192.168.1.182:8040/hubs/logHub",
+    "MaxTryCount": 3
+  },
+```
+- RemoteLoggerProvider.ClientId => RemoteHubReporter.ClientId
+- RemoteLogger.Log()
+- LogHub.CallServerLog()
+
+
 ## change list
 
-- todo: multi log clients support
+- 20200916 add multi clients log support
 - 20200916 change logs directory, add logs browser support; add build scripts
 - 20200715 refact codes
 - 20200219 add docs

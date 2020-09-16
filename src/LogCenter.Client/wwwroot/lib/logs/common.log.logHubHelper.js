@@ -22,6 +22,7 @@ function logHubHelper() {
         5: 'darkred'
     };
     let _enabled = true;
+    let _clientId = '';
 
     let _callerHost = null;
     let _connection = null;
@@ -37,6 +38,7 @@ function logHubHelper() {
             return;
         }
 
+        var clientId = logArgs.clientId;
         var color = "gray";
         if (logLevel <= 5) {
             color = colors[logLevel];
@@ -44,7 +46,7 @@ function logHubHelper() {
             color = "darkred";
         }
 
-        console.log("%c" + category + ' ' + levels[logLevel] + ' => ', "color:" + color, message);
+        console.log("%c" + clientId + category + ' ' + levels[logLevel] + ' => ', "color:" + color, message);
     }
 
     function replaceLog(connection, theLog) {
@@ -68,9 +70,13 @@ function logHubHelper() {
             if (_callerHost) {
                 reportLogArgs.category = _callerHost + " " + reportLogArgs.category;
             }
-            
-            colorLog(reportLogArgs);
 
+            reportLogArgs.clientId = _clientId;
+
+            colorLog(reportLogArgs);
+            if (!_enabled) {
+                return;
+            }
             _connection.invoke(ReportLog, reportLogArgs)
                 .catch(err => console.error(err));
         };
@@ -101,6 +107,15 @@ function logHubHelper() {
         if (options.callerHost) {
             _callerHost = options.callerHost;
         }
+        if (options.enabled) {
+            _enabled = true;
+        } else {
+            _enabled = false;
+        }
+        if (options.clientId) {
+            _clientId = options.clientId;
+        }
+
         let connection = new signalR.HubConnectionBuilder()
             .withUrl(hubUri,
                 {

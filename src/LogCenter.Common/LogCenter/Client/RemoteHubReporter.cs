@@ -79,6 +79,7 @@ namespace LogCenter.Client
 
     public class RemoteHubReporterConfig
     {
+        public string ClientId { get; set; } = string.Empty;
         public int MaxTryCount { get; set; } = 3;
         public bool Enabled { get; set; }
         public string HubUri { get; set; }

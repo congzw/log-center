@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Common.Logs;
-using LogCenter.Client;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -38,22 +36,6 @@ namespace LogCenter.Client.Apis
                 logHelper.Log(msg, value);
             }
             return msg;
-        }
-
-        [HttpGet("SetRemoteLogEnabled")]
-        public string SetRemoteLogEnabled(bool enabled)
-        {
-            var remoteHubReporter = RemoteHubReporter.Instance;
-            remoteHubReporter.Config.Enabled = enabled;
-            return "enabled: " + enabled;
-        }
-
-        [HttpGet("RefreshConfig")]
-        public async Task<RemoteHubReporterConfig> SetRemoteLogEnabled([FromServices] RemoteHubReporterConfig config)
-        {
-            var remoteHubReporter = RemoteHubReporter.Instance;
-            await remoteHubReporter.Init(config);
-            return config;
         }
     }
 }
