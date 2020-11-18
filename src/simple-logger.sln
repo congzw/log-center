@@ -1,18 +1,25 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.489
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30523.141
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogCenter.Web", "LogCenter.Web\LogCenter.Web.csproj", "{60A998F3-4568-44AA-B671-750470467553}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogCenter.Common", "LogCenter.Common\LogCenter.Common.csproj", "{882F4AEB-5FC6-4145-93F6-D677512CEEF3}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C69F1845-4D25-4ABC-867E-8F47F68C1265}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{C69F1845-4D25-4ABC-867E-8F47F68C1265}"
 	ProjectSection(SolutionItems) = preProject
 		..\readme.md = ..\readme.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogCenter.Client", "LogCenter.Client\LogCenter.Client.csproj", "{A0CB8B41-8625-4E50-97EE-F2F0126A65BD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{E449FBFE-53EB-4F74-BA47-57650C84C1EC}"
+	ProjectSection(SolutionItems) = preProject
+		..\build\build_win_x64.bat = ..\build\build_win_x64.bat
+		..\build\publish_linux_x64.bat = ..\build\publish_linux_x64.bat
+		..\build\publish_win_x64.bat = ..\build\publish_win_x64.bat
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

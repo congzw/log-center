@@ -43,9 +43,8 @@ namespace LogCenter.Server
             try
             {
                 validateResult.Message += "=> Success From All";
-                
                 CallServerLog(args);
-                //await this.Clients.All.SendAsync(HubConst.ReportLogCallback, validateResult);
+                //只发给制定的Group: MyConst.LogMonitor
                 await this.Clients.Group(MyConst.LogMonitor).SendAsync(MyConst.ReportLogCallback, validateResult);
             }
             catch (Exception ex)

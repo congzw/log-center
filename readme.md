@@ -18,7 +18,7 @@
 
 - 封装组件：
 	- C#: LogCenter.Common.dll (Server  + Client)
-	- JS: common.log.logHubHelper.js (Server + Client
+	- JS: common.log.logHubHelper.js (Server + Client)
 
 - Logger类型
 	- Client端发送日志，使用的Logger类型是："LogCenter.Client.RemoteLogger", 原始的日志类型，存储在其Category属性中
@@ -82,3 +82,10 @@ Client端设置：appsettings.json
 - 20200116 init 
 
 [system_structure]: doc/system_structure.png
+
+
+## todo
+
+- log list view
+- download log in log list view
+- view log in log list view
