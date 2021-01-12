@@ -7,11 +7,11 @@ namespace LogCenter.Web.Apis
     [Route("logs/files")]
     public class LogFileApi : ControllerBase
     {
-        [HttpGet("{id}")]
-        public IActionResult GetFiles([FromServices] LogFileDownloadService logFileDownloadService, string id)
+        [HttpGet("{fileId}")]
+        public IActionResult GetFiles([FromServices] LogFileDownloadService logFileDownloadService, string fileId)
         {
             //todo: download
-            var stream = logFileDownloadService.GetFileAsStream(id);
+            var stream = logFileDownloadService.GetFileAsStream(fileId);
             if (stream == null)
             {
                 return NotFound();
