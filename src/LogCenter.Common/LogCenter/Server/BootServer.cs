@@ -1,5 +1,4 @@
 ﻿using System;
-using Common;
 using Common.Logs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,8 +10,6 @@ namespace LogCenter.Server
     {
         public static IServiceCollection AddLogCenterServer(this IServiceCollection services, Action<ILoggingBuilder> configure = null)
         {
-            services.AddMyServiceLocator();
-
             services.AddMySignalR();
 
             services.AddLogging(config =>
@@ -31,17 +28,14 @@ namespace LogCenter.Server
 
             return services;
         }
-
+        
         public static IApplicationBuilder UseLogCenterServer(this IApplicationBuilder app, Action<IApplicationBuilder> configure = null)
         {
-            app.UseMyServiceLocator();
-            
             app.UseMySignalR();
 
-            var serviceLocator = app.ApplicationServices.GetService<IServiceLocator>();
-            var logHelper = serviceLocator.GetService<NetCoreLogHelper>();
+            var logHelper = app.ApplicationServices.GetService<NetCoreLogHelper>();
             logHelper.Info(">>>> OnInit NetCoreLogHelper Begin");
-            LogHelper.Resolve = serviceLocator.GetService<NetCoreLogHelper>;
+            LogHelper.Resolve = () => logHelper;
             logHelper.Info(">>>> OnInit NetCoreLogHelper Finished");
 
             configure?.Invoke(app);

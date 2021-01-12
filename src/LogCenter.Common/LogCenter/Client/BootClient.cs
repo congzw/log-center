@@ -1,5 +1,4 @@
-﻿using Common;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,8 +15,6 @@ namespace LogCenter.Client
 
         public static IServiceCollection AddLogCenterClient(this IServiceCollection services, IHostingEnvironment hostingEnv, IConfiguration configuration)
         {
-            services.AddMyServiceLocator();
-            
             _hostingEnv = hostingEnv;
             _configuration = configuration;
 
@@ -41,7 +38,7 @@ namespace LogCenter.Client
 
         public static void UseLogCenterClient(this IApplicationBuilder app, IApplicationLifetime applicationLifetime)
         {
-            app.UseMyServiceLocator();
+            //app.UseMyServiceLocator();
 
             _applicationLifetime = applicationLifetime;
             using (var scope = app.ApplicationServices.CreateScope())
