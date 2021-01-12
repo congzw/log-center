@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Common.Logs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -8,12 +9,10 @@ namespace LogCenter.Web.Apis
     [Route("Api/Test")]
     public class TestApi : BaseLogCenterApi
     {
-        private readonly ILogger _logger;
         private readonly ILogger<TestApi> _testApiLog;
 
-        public TestApi(ILogger logger, ILogger<TestApi> testApiLog)
+        public TestApi(ILogger<TestApi> testApiLog)
         {
-            _logger = logger;
             _testApiLog = testApiLog;
         }
 
@@ -29,17 +28,23 @@ namespace LogCenter.Web.Apis
             //Debug For debugging; executed query, user authenticated, session expired
             //Trace For trace debugging; begin method X, end method X
 
-            var msg = "Log FROM " + this.GetType().Name + " " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            _logger.LogWarning(">> " + msg);
-            _testApiLog.LogWarning(">> " + msg);
+            var logHelper = LogHelper.Instance;
+            _testApiLog.LogTrace("_testApiLog.LogTrace");
+            _testApiLog.LogInformation("_testApiLog.LogInformation");
 
+            var loggerHelperMsg = "FROM ILogHelper: " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             var values = Enum.GetValues(typeof(LogLevel));
-            foreach (int value in values)
+            var results = new List<string>();
+            foreach (LogLevel value in values)
             {
-                var logHelper = LogHelper.Instance;
+                var intValue = (int) value;
+                var nLevel = NLog.LogLevel.FromOrdinal(intValue);
+                var desc = $"{value}({intValue}) <=> NLog:{nLevel}({intValue})";
+                var msg = $"{loggerHelperMsg} => {desc}";
+                results.Add($" {desc}");
                 logHelper.Log(msg, value);
             }
-            return msg;
+            return "OK" + string.Join(',', results);
         }
     }
 }

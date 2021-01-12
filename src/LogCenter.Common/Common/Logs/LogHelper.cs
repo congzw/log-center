@@ -1,31 +1,26 @@
 ﻿using System;
 using System.Diagnostics;
 
-// ReSharper disable once CheckNamespace
 namespace Common.Logs
 {
     public interface ILogHelper
     {
-        void Log(string message, int level);
+        void Log(string message, int level, string category = "");
     }
 
     public class LogHelper : ILogHelper
     {
-        public void Log(string message, int level = 1)
+        public void Log(string message, int level = 1, string category = "")
         {
             var logMessage = string.Format("{0} [{1}]{2} {3}", "LogCenter.Common.LogHelper", "Default", level.ToString(), message);
             Trace.WriteLine(logMessage);
         }
 
         #region for extensions and simple use
-        public static ILogHelper Instance => Resolve == null ? _default : Resolve();
-        private static readonly ILogHelper _default = new LogHelper();
-        public static Func<ILogHelper> Resolve = null;
 
-        public static void Debug(string message)
-        {
-            Instance.Debug(message);
-        }
+        internal static Lazy<LogHelper> Lazy = new Lazy<LogHelper>(() => new LogHelper());
+        public static ILogHelper Instance => Resolve == null ? Lazy.Value : Resolve();
+        public static Func<ILogHelper> Resolve = null;
 
         #endregion
     }

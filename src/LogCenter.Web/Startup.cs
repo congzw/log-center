@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 
 namespace LogCenter.Web
@@ -21,14 +21,22 @@ namespace LogCenter.Web
         public IConfiguration Configuration { get; set; }
         public IApplicationLifetime ApplicationLifetime { get; set; }
 
-        public Startup(IHostingEnvironment hostingEnvironment, IConfiguration configuration)
+        private readonly Func<ILogHelper> _loggerFactory = null;
+
+        public Startup(IHostingEnvironment hostingEnvironment, IConfiguration configuration, ILogger<LogHelper> logger)
         {
+            var netCoreLogHelper = new NetCoreLogHelper(logger);
+            _loggerFactory = () => netCoreLogHelper;
             HostingEnvironment = hostingEnvironment;
             Configuration = configuration;
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.ReplaceLogHelper(_loggerFactory);
+
+            services.AddTheLogFiles(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "_nlogs"));
+
             services.AddCors(config =>
             {
                 //'Access-Control-Allow-Origin' header in the response must not be the wildcard '*'
@@ -84,6 +92,7 @@ namespace LogCenter.Web
             }
 
             UseMyStaticFiles(app);
+            app.UseTheLogFiles("/logs/files");
 
             app.UseCors("policy");
             
@@ -100,19 +109,12 @@ namespace LogCenter.Web
             {
                 ContentTypeProvider = new FileExtensionContentTypeProvider
                 {
-                    Mappings = { [".vue"] = "text/html" }
+                    Mappings =
+                    {
+                        [".vue"] = "text/html"
+                    }
                 }
             });
-
-            //make logs directory browser ok:
-            var logsFileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "logs"));
-            var logsRequestPath = "/logs";
-            app.UseDirectoryBrowser(new DirectoryBrowserOptions
-            {
-                FileProvider = logsFileProvider,
-                RequestPath = logsRequestPath
-            });
-
         }
     }
 

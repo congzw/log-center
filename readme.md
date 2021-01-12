@@ -83,6 +83,15 @@ Client端设置：appsettings.json
 
 [system_structure]: doc/system_structure.png
 
+## 工具日志和远端日志
+
+工具日志和远端日志两部分设计，完全不相关，注意避免混淆
+
+- LogHelper    
+    - ILogHelper <- LogHelper
+    - ILogHelper <- LogHelperAdapter(Logger<LogHelper> logger)
+- RemoteLoggerProvider
+    - ILoggerProvider <- RemoteLoggerProvider
 
 ## todo
 
