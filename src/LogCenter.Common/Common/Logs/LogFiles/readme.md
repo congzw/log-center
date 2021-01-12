@@ -1,17 +1,28 @@
-﻿using Common.Logs.LogFiles;
-using LogCenter.Server;
-using Microsoft.AspNetCore.Mvc;
+﻿# how to
 
-namespace LogCenter.Web.Apis
-{
+## boot
+
+```
+
+//AddTheLogFiles
+services.AddTheLogFiles(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "_nlogs"));
+//UseTheLogFiles
+app.UseTheLogFiles("/logs/files");
+
+
+```
+
+## api controller
+
+``` csharp
+
     [ApiController]
     [Route("logs/files")]
-    public class LogFileApi : ControllerBase
+    public class LogFileController : ControllerBase
     {
         [HttpGet("{fileId}")]
         public IActionResult GetFiles([FromServices] LogFileService logFileDownloadService, string fileId)
         {
-            //todo: download
             var stream = logFileDownloadService.GetFileAsStream(fileId);
             if (stream == null)
             {
@@ -20,4 +31,5 @@ namespace LogCenter.Web.Apis
             return stream;
         }
     }
-}
+
+```

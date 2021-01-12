@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Common.Logs;
+using Common.Logs.LogFiles;
 using LogCenter.Server;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
