@@ -10,10 +10,10 @@ namespace LogCenter.Server
         public override async Task OnConnectedAsync()
         {
             //如果指定了group，则加入组
-            var isLogMonitor = this.Context.GetHttpContext().TryGetQueryParameterValue(MyConst.LogMonitor, false);
+            var isLogMonitor = this.Context.GetHttpContext().TryGetQueryParameterValue(ReportLogConst.LogMonitor, false);
             if (isLogMonitor)
             {
-                await this.Groups.AddToGroupAsync(this.Context.ConnectionId, MyConst.LogMonitor);
+                await this.Groups.AddToGroupAsync(this.Context.ConnectionId, ReportLogConst.LogMonitor);
             }
             await base.OnConnectedAsync().ConfigureAwait(false);
         }
@@ -21,10 +21,10 @@ namespace LogCenter.Server
         public override async Task OnDisconnectedAsync(Exception exception)
         {
             //如果指定了group
-            var isLogMonitor = this.Context.GetHttpContext().TryGetQueryParameterValue(MyConst.LogMonitor, false);
+            var isLogMonitor = this.Context.GetHttpContext().TryGetQueryParameterValue(ReportLogConst.LogMonitor, false);
             if (isLogMonitor)
             {
-                await this.Groups.RemoveFromGroupAsync(this.Context.ConnectionId, MyConst.LogMonitor);
+                await this.Groups.RemoveFromGroupAsync(this.Context.ConnectionId, ReportLogConst.LogMonitor);
             }
             await base.OnDisconnectedAsync(exception).ConfigureAwait(false);
         }
@@ -37,7 +37,7 @@ namespace LogCenter.Server
             if (!validateResult.Success)
             {
                 validateResult.Message += "=> Failed From Caller";
-                await this.Clients.Caller.SendAsync(MyConst.ReportLogCallback, validateResult);
+                await this.Clients.Caller.SendAsync(ReportLogConst.ReportLogCallback, validateResult);
             }
 
             try
@@ -45,14 +45,14 @@ namespace LogCenter.Server
                 validateResult.Message += "=> Success From All";
                 CallServerLog(args);
                 //只发给制定的Group: MyConst.LogMonitor
-                await this.Clients.Group(MyConst.LogMonitor).SendAsync(MyConst.ReportLogCallback, validateResult);
+                await this.Clients.Group(ReportLogConst.LogMonitor).SendAsync(ReportLogConst.ReportLogCallback, validateResult);
             }
             catch (Exception ex)
             {
                 validateResult.Message += "=> Ex From Caller";
                 validateResult.Message = ex.Message;
                 validateResult.Success = false;
-                await this.Clients.Caller.SendAsync(MyConst.ReportLogCallback, validateResult);
+                await this.Clients.Caller.SendAsync(ReportLogConst.ReportLogCallback, validateResult);
             }
         }
 

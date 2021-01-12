@@ -1,6 +1,6 @@
 ﻿namespace LogCenter
 {
-    public class MyConst
+    public class ReportLogConst
     {
         public static string Args_Group = "group";
         public static string LogMonitor = "LogMonitor";
