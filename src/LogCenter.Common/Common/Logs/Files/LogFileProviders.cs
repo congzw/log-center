@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.FileProviders;
 
-namespace Common.Logs.LogFiles
+namespace Common.Logs.Files
 {
     public interface ILogFileProvider : IFileProvider
     {

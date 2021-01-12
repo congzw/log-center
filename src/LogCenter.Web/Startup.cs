@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Common.Logs;
-using Common.Logs.LogFiles;
+using Common.Logs.Files;
 using LogCenter.Server;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NLog.Extensions.Logging;
 
 namespace LogCenter.Web
 {
@@ -22,22 +21,18 @@ namespace LogCenter.Web
         public IConfiguration Configuration { get; set; }
         public IApplicationLifetime ApplicationLifetime { get; set; }
 
-        private readonly Func<ILogHelper> _loggerFactory = null;
+        private readonly Func<NetCoreLogHelper> _loggerFactory = null;
 
         public Startup(IHostingEnvironment hostingEnvironment, IConfiguration configuration, ILogger<LogHelper> logger)
         {
-            var netCoreLogHelper = new NetCoreLogHelper(logger);
-            _loggerFactory = () => netCoreLogHelper;
+            logger.LogDebug("Startup Ctor()");
+            _loggerFactory = () => new NetCoreLogHelper(logger);
             HostingEnvironment = hostingEnvironment;
             Configuration = configuration;
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.ReplaceLogHelper(_loggerFactory);
-
-            services.AddTheLogFiles(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "_nlogs"));
-
             services.AddCors(config =>
             {
                 //'Access-Control-Allow-Origin' header in the response must not be the wildcard '*'
@@ -79,8 +74,9 @@ namespace LogCenter.Web
                     //options.ClientErrorMapping[404].Link = "https://httpstatuses.com/404";
                 });
 
+            services.AddTheLogFiles(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "_nlogs"));
+            services.ReplaceLogHelper(_loggerFactory);
             services.AddLogCenterServer();
-            services.AddMyNLog();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime applicationLifetime)
@@ -96,11 +92,9 @@ namespace LogCenter.Web
             app.UseTheLogFiles("/logs/files");
 
             app.UseCors("policy");
-            
             app.UseMvc();
-            
+
             app.UseLogCenterServer();
-            app.UseMyNLog();
         }
 
         private void UseMyStaticFiles(IApplicationBuilder app)
@@ -116,40 +110,6 @@ namespace LogCenter.Web
                     }
                 }
             });
-        }
-    }
-
-    public static class NLogBoot
-    {
-        public static IServiceCollection AddMyNLog(this IServiceCollection services)
-        {
-            services.AddLogging(config =>
-            {
-                config.AddNLog("nlog.config"); //for file log
-                //config.SetMinimumLevel(LogLevel.Trace);
-            });
-            return services;
-        }
-
-        public static void UseMyNLog(this IApplicationBuilder app)
-        {
-            var applicationLifetime = app.ApplicationServices.GetService<IApplicationLifetime>();
-            var logHelper = LogHelper.Resolve();
-            applicationLifetime.ApplicationStopping.Register(OnShutdownNLog, logHelper);
-        }
-        
-        private static void OnShutdownNLog(object state)
-        {
-            var logHelper = state as ILogHelper;
-            try
-            {
-                logHelper?.Info(">>>> OnShutdownNLog");
-                NLog.LogManager.Shutdown();
-            }
-            catch (Exception e)
-            {
-                logHelper?.Error(e, ">>>> OnShutdownNLog Error");
-            }
         }
     }
 }

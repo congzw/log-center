@@ -1,7 +1,8 @@
 ﻿using System;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using NLog.Web;
 
 namespace LogCenter.Web
 {
@@ -9,31 +10,38 @@ namespace LogCenter.Web
     {
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
+            var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+            try
+            {
+                logger.Debug("program main starting");
+                CreateHostBuilder(args).Build().Run();
+                logger.Debug("program main stopping");
+            }
+            catch (Exception exception)
+            {
+                //NLog: catch setup errors
+                logger.Error(exception, "program main exception");
+                throw;
+            }
+            finally
+            {
+                // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
+                NLog.LogManager.Shutdown();
+            }
         }
         
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args)
+        public static IWebHostBuilder CreateHostBuilder(string[] args)
         {
-            var baseDirectory = GetBaseDirectory();
-            var configuration = new ConfigurationBuilder().SetBasePath(baseDirectory)
-                .Build();
-
             var webHostBuilder = WebHost.CreateDefaultBuilder(args)
-                .UseConfiguration(configuration)
-                .UseStartup<Startup>();
+                .UseStartup<Startup>()
+                .ConfigureLogging(logging =>
+                {
+                    logging.ClearProviders();
+                    logging.SetMinimumLevel(LogLevel.Trace);
+                })
+                .UseNLog();
 
             return webHostBuilder;
-        }
-
-
-        private static string GetBaseDirectory()
-        {
-            var basePath = Environment.CurrentDirectory;
-            if (string.IsNullOrEmpty(basePath))
-            {
-                basePath = AppDomain.CurrentDomain.BaseDirectory;
-            }
-            return basePath;
         }
     }
 }

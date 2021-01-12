@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Common.Logs
 {
-    public class NetCoreLogHelper : ILogHelper
+    public class NetCoreLogHelper : LogHelper, ILogHelper
     {
         public NetCoreLogHelper(ILogger<LogHelper> loggerWrapper)
         {
@@ -12,7 +12,7 @@ namespace Common.Logs
         }
 
         public string MessagePrefix { get; set; } = ">>>> ";
-        public void Log(string message, int level, string category = "")
+        public new void Log(string message, int level, string category = "")
         {
             if (MessagePrefix != null)
             {
@@ -72,10 +72,15 @@ namespace Common.Logs
             logHelper.Log(message, (int)level);
         }
 
-        public static IServiceCollection ReplaceLogHelper(this IServiceCollection services, Func<ILogHelper> factory)
+        public static IServiceCollection ReplaceLogHelper(this IServiceCollection services, Func<NetCoreLogHelper> factory)
         {
+            var logHelper = factory();
             LogHelper.Resolve = factory;
-            services.AddSingleton<ILogHelper>(sp => factory());
+            logHelper.Info("AddLogging Begin");
+            services.AddSingleton<NetCoreLogHelper>(sp => logHelper);
+            services.AddSingleton<LogHelper>(sp => sp.GetRequiredService<NetCoreLogHelper>());
+            services.AddSingleton<ILogHelper>(sp => sp.GetRequiredService<NetCoreLogHelper>());
+            logHelper.Info("AddLogging Finished");
             return services;
         }
     }

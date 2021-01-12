@@ -2,7 +2,7 @@
 using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Common.Logs.LogFiles
+namespace Common.Logs.Files
 {
     public class LogFileService
     {

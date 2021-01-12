@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 
-namespace Common.Logs.LogFiles
+namespace Common.Logs.Files
 {
     public static class LogFileExtensions
     {

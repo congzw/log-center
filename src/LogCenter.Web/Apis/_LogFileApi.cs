@@ -1,5 +1,4 @@
-﻿using Common.Logs.LogFiles;
-using LogCenter.Server;
+﻿using Common.Logs.Files;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LogCenter.Web.Apis
