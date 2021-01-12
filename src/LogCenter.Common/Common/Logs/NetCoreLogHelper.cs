@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -72,16 +73,21 @@ namespace Common.Logs
             logHelper.Log(message, (int)level);
         }
 
-        public static IServiceCollection ReplaceLogHelper(this IServiceCollection services, Func<NetCoreLogHelper> factory)
+        public static IServiceCollection AddNetCoreLogHelper(this IServiceCollection services)
         {
-            var logHelper = factory();
-            LogHelper.Resolve = factory;
-            logHelper.Info("AddLogging Begin");
-            services.AddSingleton<NetCoreLogHelper>(sp => logHelper);
+            services.AddSingleton<NetCoreLogHelper>();
+            services.AddSingleton<ILogHelper, NetCoreLogHelper>(sp => sp.GetRequiredService<NetCoreLogHelper>());
             services.AddSingleton<LogHelper>(sp => sp.GetRequiredService<NetCoreLogHelper>());
-            services.AddSingleton<ILogHelper>(sp => sp.GetRequiredService<NetCoreLogHelper>());
-            logHelper.Info("AddLogging Finished");
             return services;
+        }
+
+        public static IApplicationBuilder UseNetCoreLogHelper(this IApplicationBuilder app)
+        {
+            var logHelper = app.ApplicationServices.GetRequiredService<NetCoreLogHelper>();
+            logHelper.Info("LogHelper.Resolve start");
+            LogHelper.Resolve = () => logHelper;
+            logHelper.Info("LogHelper.Resolve end");
+            return app;
         }
     }
 }

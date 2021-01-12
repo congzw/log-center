@@ -11,28 +11,27 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 namespace LogCenter.Web
 {
     public class Startup
     {
-        public IHostingEnvironment HostingEnvironment { get; set; }
+        public IHostingEnvironment Environment { get; set; }
         public IConfiguration Configuration { get; set; }
-        public IApplicationLifetime ApplicationLifetime { get; set; }
-
-        private readonly Func<NetCoreLogHelper> _loggerFactory = null;
-
-        public Startup(IHostingEnvironment hostingEnvironment, IConfiguration configuration, ILogger<LogHelper> logger)
+        
+        public Startup(IHostingEnvironment hostingEnvironment, IConfiguration configuration)
         {
-            logger.LogDebug("Startup Ctor()");
-            _loggerFactory = () => new NetCoreLogHelper(logger);
-            HostingEnvironment = hostingEnvironment;
+            Environment = hostingEnvironment;
             Configuration = configuration;
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
+            //setup logs
+            services.AddNetCoreLogHelper();
+            var logDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory ?? Environment.ContentRootPath, "_nlogs");
+            services.AddTheLogFiles(logDir);
+
             services.AddCors(config =>
             {
                 //'Access-Control-Allow-Origin' header in the response must not be the wildcard '*'
@@ -74,20 +73,17 @@ namespace LogCenter.Web
                     //options.ClientErrorMapping[404].Link = "https://httpstatuses.com/404";
                 });
 
-            services.AddTheLogFiles(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "_nlogs"));
-            services.ReplaceLogHelper(_loggerFactory);
             services.AddLogCenterServer();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime applicationLifetime)
         {
-            ApplicationLifetime = applicationLifetime;
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseNetCoreLogHelper();
             UseMyStaticFiles(app);
             app.UseTheLogFiles("/logs/files");
 
