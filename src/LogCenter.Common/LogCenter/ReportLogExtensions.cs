@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace LogCenter
 {
-    public static class MyExtensions
+    public static class ReportLogExtensions
     {
         public static ReportLogResult Validate(this ReportLogArgs args)
         {
