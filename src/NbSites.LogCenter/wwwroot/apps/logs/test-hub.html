@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="../../statics/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="../../statics/libs/jquery/jquery.js"></script>
+    <script src="../../statics/libs/signalR/signalr.js"></script>
+    <script src="../../statics/libs/common/common.js"></script>
+    <script src="../../statics/libs/common/common.log.js"></script>
+    <script src="../../statics/libs/common/common.log.logHubHelper.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2>打开控制台，实时查看日志：Press F12</h2>
+                <div class="panel panel-default" id="theApp">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">连接设置</h3>
+                    </div>
+                    <div class="panel-body" v-show="!connState.connected">
+                        <form class="form-horizontal form-group-sm">
+                            <div class="form-group">
+                                <label for="ClientId" class="col-sm-2 control-label">ClientId</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="ClientId" placeholder="连接的客户端身份Id" v-model="setting.clientId">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="ClientId" class="col-sm-2 control-label">HubUri</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="Host" placeholder="连接使用的Hub地址" v-model="setting.hubUri">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="Category" class="col-sm-2 control-label">Category</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="Category" placeholder="测试使用的日志分类" v-model="setting.category">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-addon" id="addon1">ConnectUri</span>
+                            <input type="text" class="form-control" id="basic-url" aria-describedby="addon1" v-model="hubUri" v-bind:disabled="connState.connected">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button" v-on:click="initConnect" v-bind:disabled="connState.connected">{{connState.connBtnText}}</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="../../statics/libs/vue/vue.min.js"></script>
+    <script>
+        common.global.setVirtualApp('../../../');
+    </script>
+    <script src="test-hub.js"></script>
+</body>
+</html>

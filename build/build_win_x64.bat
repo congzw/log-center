@@ -1,6 +1,7 @@
-cd ../src/
+cd ../src/NbSites.LogCenter
 
-call dotnet restore
-call dotnet build --verbosity minimal /p:IsPublish=false /p:IsRunWebpack=false
+@REM call dotnet nuget list source
+call dotnet restore -r win-x64
+call dotnet publish -c Release -r win-x64 --self-contained true --no-restore --output .\bin\publish /p:EnvironmentName=Development
 
 pause
