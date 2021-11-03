@@ -75,28 +75,19 @@ namespace NbSites.LogCenter.Api.Logs.AppServices
         public async Task<MessageResult> ReadLogFile(string fileId)
         {
             var messageResult = new MessageResult();
-            
-            if (string.IsNullOrWhiteSpace(fileId))
+
+            var groupNameFile = GetGroupNameFile(fileId);
+            if (groupNameFile == null)
             {
-                messageResult.Message = "fileId不能为空";
+                messageResult.Message = "文件不存在:" + fileId;
                 return messageResult;
             }
-
-            //修正转义
-            fileId = fileId.Replace("%2F", "/");
-            if (!fileId.EndsWith(".log"))
-            {
-                fileId += ".log";
-            }
-
-            // "remotes/1.log"
+            
             var fileHelper = FileHelper.Instance;
-            var filePath = fileHelper.CombineBaseDirectory("_nlogs", fileId);
+            var filePath = groupNameFile.GetFullFilePath();
             if (!fileHelper.Exists(filePath))
             {
-                var groupNameFile = GetGroupNameFile(fileId);
-                var fileDesc = groupNameFile != null ? groupNameFile.GetFullGroupNameWithExtension() : fileId;
-                messageResult.Message = $"文件不存在: {fileDesc}";
+                messageResult.Message = $"文件不存在: {groupNameFile.GetFullGroupNameWithExtension()}";
                 return messageResult;
             }
 
@@ -113,14 +104,26 @@ namespace NbSites.LogCenter.Api.Logs.AppServices
             {
                 return null;
             }
+            
+            //修正转义
+            fileId = fileId.Replace("%2F", "/");
+            if (!fileId.EndsWith(".log"))
+            {
+                fileId = fileId + ".log";
+            }
 
             if (!fileId.EndsWith(".log"))
             {
                 fileId += ".log";
             }
             
-            // "remotes/1.log"
             // "1.log"
+            // "remotes/1.log"
+            if (fileId.StartsWith('/'))
+            {
+                fileId = fileId.TrimStart('/');
+            }
+
             var fileHelper = FileHelper.Instance;
             var logDirectory = fileHelper.CombineBaseDirectory("_nlogs");
             var groupNameFile = GroupNameFile.Create(logDirectory, fileId);
