@@ -52,6 +52,16 @@ namespace Common.Utilities
             File.WriteAllText(filePath, content, Encoding.UTF8);
         }
 
+        public bool Exists(string filePath)
+        {
+            return File.Exists(filePath);
+        }
+
+        public void Delete(string filePath)
+        {
+            File.Delete(filePath);
+        }
+
         #region path
 
         public string CombinePath(params string[] paths)

@@ -8,11 +8,10 @@ using Common.Logs.LogCenter.Client;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace NbSites.LogCenter.Api
+namespace NbSites.LogCenter.Api.Logs
 {
     //使用[HttpGet]是为了方便浏览器直接测试
-    [ApiController]
-    [Route("Api/Fx/Logs/LogReporter/[action]")]
+    [Route("~/Api/Fx/Logs/LogReporter/[action]")]
     public class LogReporterApi : ControllerBase
     {
         [HttpGet]
@@ -42,7 +41,7 @@ namespace NbSites.LogCenter.Api
         {
             return LogReporter.Instance.Config;
         }
-
+        
         /// <summary>
         /// 获取忽略发送到远程的日志类别
         /// </summary>
