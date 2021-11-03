@@ -6,7 +6,7 @@ using NbSites.LogCenter.Api.Logs.AppServices;
 
 namespace NbSites.LogCenter.Api.Logs
 {
-    [Route("~/Api/Fx/Logs/Files/[action]")]
+    [Route("~/Api/Fx/Logs/LogFile/[action]")]
     public class LogFileApi : ControllerBase
     {
         private readonly ILogFileService _logFileService;
@@ -28,8 +28,8 @@ namespace NbSites.LogCenter.Api.Logs
             return _logFileService.DeleteLogFiles(args);
         }
 
-        [HttpGet("{fileId}")]
-        public async Task<IActionResult> Download(string fileId)
+        [HttpGet]
+        public async Task<IActionResult> Download([FromQuery]string fileId)
         {
             var readLogFile = await _logFileService.ReadLogFile(fileId);
             if (!readLogFile.Success)
